@@ -1,0 +1,15 @@
+/* Variables de marca de MAU (provisionales hasta el rebranding) */
+:root {
+  --color-bg: #0e0e0e;
+  --color-surface: #1a1a1a;
+  --color-text: #f2efe9;
+  --color-muted: #8f8a82;
+  --color-accent: #e8ff3a;
+
+  --font-display: 'Georgia', serif;
+  --font-body: system-ui, sans-serif;
+
+  --radius: 18px;
+  --gap: 1.25rem;
+  --max-width: 1400px;
+}
