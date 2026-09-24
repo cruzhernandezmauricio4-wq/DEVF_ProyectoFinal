@@ -1,12 +1,12 @@
-import news from './data/news.json'
+import Header from './components/Header'
+import Home from './pages/Home'
 
 function App() {
   return (
-    <main className="app">
-      <h1>MAU</h1>
-      <p>Moda for All and U — tablero de noticias de moda en construcción.</p>
-      <p>{news.length} noticias cargadas.</p>
-    </main>
+    <>
+      <Header />
+      <Home />
+    </>
   )
 }
 

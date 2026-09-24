@@ -1,0 +1,8 @@
+/* Acomodo tipo mosaico. Se reemplazará por el tablero disperso en el Sprint 2. */
+.board {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 1rem;
+  columns: 260px;
+  column-gap: var(--gap);
+}
