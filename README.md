@@ -58,25 +58,46 @@ El proyecto se basa en la opción **🛒 Catálogo Interactivo de Productos**, a
 ## 📁 Estructura del proyecto
 
 ```
-mau/
+DEVF_ProyectoFinal/
 ├── docs/
-│   ├── ACUERDOS.md       # Dinámica y acuerdos de trabajo
-│   └── BACKLOG.md        # Historias de usuario y plan de sprints
-├── public/               # Archivos estáticos (favicon, etc.)
+│   ├── ACUERDOS.md           # Dinámica y acuerdos de trabajo
+│   ├── BACKLOG.md            # Historias de usuario y plan de sprints
+│   └── GIT.md                # Guía del flujo de Git del proyecto
+├── public/                   # Archivos estáticos (favicon, etc.)
 ├── src/
-│   ├── assets/           # Imágenes e íconos de la marca
-│   ├── components/       # Componentes reutilizables (NewsCard, Board…)
+│   ├── assets/               # Imágenes e íconos de la marca
+│   ├── components/           # Componentes reutilizables
+│   │   ├── Header.jsx        # Logo y lema de MAU
+│   │   ├── Board.jsx         # Tablero que acomoda las noticias
+│   │   ├── NewsCard.jsx      # Tarjeta de una noticia
+│   │   └── PlatformBadge.jsx # Etiqueta de la fuente (YouTube, TikTok…)
 │   ├── data/
-│   │   └── news.json     # Noticias curadas con sus etiquetas
-│   ├── hooks/            # Hooks personalizados (useClickOrDoubleClick…)
-│   ├── pages/            # Vistas (Tablero, Recomendaciones)
-│   ├── styles/           # Estilos globales y variables de marca
-│   ├── App.jsx
-│   ├── index.css
-│   └── main.jsx
+│   │   └── news.json         # Noticias curadas con sus etiquetas
+│   ├── hooks/                # Hooks personalizados (próximos sprints)
+│   ├── pages/
+│   │   └── Home.jsx          # Página principal con el tablero
+│   ├── styles/
+│   │   └── variables.css     # Colores, tipografías y medidas de la marca
+│   ├── App.jsx               # Componente raíz
+│   ├── index.css             # Estilos globales
+│   └── main.jsx              # Punto de entrada de React
+├── .gitignore                # Archivos que Git no debe subir
 ├── index.html
 ├── package.json
 └── vite.config.js
+```
+
+Cada componente tiene su propio archivo `.css` junto a él (ej. `NewsCard.jsx` + `NewsCard.css`).
+
+### Árbol de componentes
+
+```
+App
+├── Header
+└── Home (página)
+    └── Board
+        └── NewsCard        (una por cada noticia)
+            └── PlatformBadge
 ```
 
 ### Modelo de una noticia
@@ -98,8 +119,8 @@ mau/
 ## 🚀 Cómo correr el proyecto
 
 ```bash
-git clone https://github.com/cruzhernandezmauricio4-wq/<nombre-del-repo>.git
-cd <nombre-del-repo>
+git clone https://github.com/cruzhernandezmauricio4-wq/DEVF_ProyectoFinal.git
+cd DEVF_ProyectoFinal
 npm install
 npm run dev
 ```
@@ -119,16 +140,18 @@ Otros comandos:
 
 La dinámica de trabajo, los acuerdos y el uso de SCRUM están en **[docs/ACUERDOS.md](docs/ACUERDOS.md)**.
 El backlog y el plan por entregas están en **[docs/BACKLOG.md](docs/BACKLOG.md)**.
+El flujo de Git (ramas, commits y cómo actualizar el repositorio remoto) está en **[docs/GIT.md](docs/GIT.md)**.
 
 ---
 
 ## 🗺️ Estado
 
-- [x] **Parte 1:** definición del proyecto, acuerdos de trabajo y repositorio base
-- [ ] **Parte 2:** tablero disperso con datos del JSON
-- [ ] **Parte 3:** efecto *pop* elástico e interacciones de clic y doble clic
-- [ ] **Parte 4:** vista de recomendaciones
-- [ ] **Parte 5:** rebranding visual final y despliegue en Vercel
+- [x] **Parte 1:** definición del proyecto, acuerdos de trabajo y repositorio en GitHub
+- [x] **Parte 2:** app creada con Vite, `.gitignore`, estructura de carpetas y primeros componentes (`Header`, `Board`, `NewsCard`, `PlatformBadge`)
+- [ ] Tablero disperso con noticias reales
+- [ ] Efecto *pop* elástico e interacciones de clic y doble clic
+- [ ] Vista de recomendaciones
+- [ ] Rebranding visual final y despliegue en Vercel
 
 ---
 

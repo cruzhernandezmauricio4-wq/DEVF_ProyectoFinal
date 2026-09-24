@@ -32,10 +32,17 @@ Historias de usuario del proyecto **MAU**, ordenadas por prioridad.
 - [x] Redactar el README y el backlog
 - [x] Crear el repositorio en GitHub y hacer el primer commit
 
-### Sprint 2: Tablero base
+### Sprint 2: Estructura y tablero base
+- [x] Confirmar el proyecto creado con Vite y el `.gitignore`
+- [x] Variables de marca en `src/styles/variables.css`
+- [x] Componente `Header` con logo y lema
+- [x] Página `Home` que carga las noticias desde `news.json`
+- [x] Componente `Board` con acomodo tipo mosaico (versión inicial)
+- [x] Componente `NewsCard` con imagen, título, etiquetas y enlace
+- [x] Componente `PlatformBadge` para identificar la fuente
+- [x] Guía de Git en `docs/GIT.md`
 - [ ] Llenar `news.json` con al menos 20 noticias reales y sus etiquetas
-- [ ] Componente `Board` con acomodo disperso
-- [ ] Componente `NewsCard` con imagen, título e ícono de plataforma
+- [ ] Cambiar el mosaico por un acomodo disperso
 - [ ] Primer despliegue en Vercel
 
 ### Sprint 3: Interacciones
