@@ -1,43 +1,34 @@
 import { AUTH_API, SESSION_MINUTES } from '../config/auth'
+import { MembersResponseSchema, TokensSchema, UserSchema } from '../schemas/auth'
+import { AppError } from '../utils/errors'
+import { requestJson } from './httpClient'
 
 // Petición al backend de autenticación. Si hay token, lo envía como Bearer.
-async function request(path, { token, body, signal } = {}) {
-  const headers = { 'Content-Type': 'application/json' }
-  if (token) headers.Authorization = `Bearer ${token}`
-
-  const response = await fetch(`${AUTH_API}${path}`, {
-    method: body ? 'POST' : 'GET',
-    headers,
-    body: body && JSON.stringify(body),
-    signal,
+function request(path, { token, ...options } = {}) {
+  return requestJson(`${AUTH_API}${path}`, {
+    ...options,
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
   })
-
-  const data = await response.json()
-  if (!response.ok) {
-    const error = new Error(data.message ?? 'Error de autenticación')
-    error.status = response.status
-    throw error
-  }
-  return data
 }
 
 // El backend valida el token y responde con los datos del usuario (incluido su rol).
 export function getCurrentUser(accessToken, { signal } = {}) {
-  return request('/me', { token: accessToken, signal })
+  return request('/me', { token: accessToken, signal, schema: UserSchema })
 }
 
 export async function login(username, password) {
-  let tokens
+  let session
   try {
-    tokens = await request('/login', {
+    session = await request('/login', {
+      method: 'POST',
       body: { username, password, expiresInMins: SESSION_MINUTES },
+      schema: TokensSchema,
     })
   } catch (error) {
-    if (error.status === 400) throw new Error('Usuario o contraseña incorrectos.')
+    if (error.status === 400) throw new AppError('auth', 'Usuario o contraseña incorrectos.')
     throw error
   }
 
-  const session = { accessToken: tokens.accessToken, refreshToken: tokens.refreshToken }
   const user = await getCurrentUser(session.accessToken)
   return { user, session }
 }
@@ -49,20 +40,22 @@ export async function restoreSession(session, { signal } = {}) {
   } catch (error) {
     if (error.status !== 401) throw error
 
-    const tokens = await request('/refresh', {
+    const renewed = await request('/refresh', {
+      method: 'POST',
       body: { refreshToken: session.refreshToken, expiresInMins: SESSION_MINUTES },
+      schema: TokensSchema,
       signal,
     })
-    const renewed = { accessToken: tokens.accessToken, refreshToken: tokens.refreshToken }
     return { user: await getCurrentUser(renewed.accessToken, { signal }), session: renewed }
   }
 }
 
 // Recurso protegido: el backend solo lo entrega con un token válido.
 export async function getCommunityMembers(accessToken, { signal } = {}) {
-  const data = await request(
-    '/users?limit=12&select=firstName,lastName,username,email,role,image',
-    { token: accessToken, signal },
-  )
+  const data = await request('/users?limit=12&select=firstName,lastName,username,email,role,image', {
+    token: accessToken,
+    signal,
+    schema: MembersResponseSchema,
+  })
   return data.users
 }
