@@ -110,16 +110,22 @@ Historias de usuario del proyecto **MAU**, ordenadas por prioridad.
 - [ ] Pegar la URL de producción en el README y en GitHub
 - [ ] Proteger `main` para exigir la CI en verde
 
-### Sprint 8: Interacciones
-- [ ] Efecto *pop* elástico en *hover*
-- [ ] Hook `useClickOrDoubleClick` para distinguir clic y doble clic
-- [ ] Doble clic que abre la URL en una pestaña nueva
+### Sprint 8: Diseño e interacciones ✅
+- [x] Identidad plata cromada + vidrio líquido (variables, fondo, clase `.glass`)
+- [x] Tipografías editoriales empaquetadas (Instrument Serif + Inter)
+- [x] Tarjetas con foto completa y panel de vidrio
+- [x] Efecto *pop* elástico en *hover* con reflejo que sigue al cursor
+- [x] Hook `useClickOrDoubleClick` para distinguir clic y doble clic
+- [x] Doble clic que abre la URL en una pestaña nueva
+- [x] Página de noticia `/noticia/:id` con botón a la fuente
+- [x] Noticias relacionadas por etiquetas, fuente y plataforma (con pruebas)
+- [x] Rediseño de header, filtros, login, perfil, curaduría y avisos
 
-### Sprint 9: Recomendaciones
-- [ ] Algoritmo de similitud por etiquetas en común
-- [ ] Vista de recomendaciones con su propia ruta
+### Sprint 9: Recomendaciones ✅ (se hizo en el Sprint 8)
+- [x] Algoritmo de similitud por etiquetas en común
+- [x] Vista de recomendaciones con su propia ruta
 
-### Sprint 10: Rebranding
-- [ ] Paleta, tipografía y logo nuevos
-- [ ] Diseño responsivo
+### Sprint 10: Pulido
+- [x] Paleta, tipografía y logo nuevos (Sprint 8)
+- [ ] Diseño responsivo afinado para celular
 - [ ] Optimización de imágenes
