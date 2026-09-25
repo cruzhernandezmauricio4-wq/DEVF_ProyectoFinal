@@ -1,0 +1,28 @@
+.error-state {
+  max-width: 560px;
+  margin: 3rem auto;
+  padding: 2rem 1.5rem;
+  border: 1px solid #2a2a2a;
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  text-align: center;
+}
+
+.error-state__title {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+}
+
+.error-state__message {
+  margin: 0 0 1.5rem;
+  color: var(--color-muted);
+  line-height: 1.5;
+}
+
+.error-state__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
