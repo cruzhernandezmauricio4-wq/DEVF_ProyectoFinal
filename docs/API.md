@@ -162,12 +162,15 @@ Probando 6 fuentes en https://api.rss2json.com/v1/api.json
 
 ## 4. Manejo de errores
 
+Todas las peticiones pasan por el cliente central [`httpClient.js`](../src/services/httpClient.js), que clasifica los errores y valida las respuestas con Zod. El detalle completo está en **[ERRORES.md](ERRORES.md)**.
+
 | Situación | Qué pasa |
 |---|---|
-| Una fuente falla | Se muestran las demás y se registra un aviso en la consola |
-| Todas las fuentes fallan | Se muestra el mensaje "No se pudo cargar ninguna fuente de noticias." |
+| Una fuente falla | Se muestran las demás y un aviso indica cuáles no respondieron |
+| Todas las fuentes fallan | Se muestra el motivo (sin conexión, servidor caído…) con un botón **Reintentar** |
+| El servidor tarda más de 10 s | Se cancela la petición y se informa |
 | El usuario sale de la página antes de que termine la carga | La petición se cancela con `AbortController` |
-| Una noticia no trae imagen | Se descarta para no romper el tablero |
+| Una noticia viene incompleta (sin imagen, enlace inválido) | Zod la descarta sin afectar a las demás |
 
 ---
 

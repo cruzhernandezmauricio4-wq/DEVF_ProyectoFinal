@@ -15,12 +15,14 @@ Historias de usuario del proyecto **MAU**, ordenadas por prioridad.
 | HU-11 | Como visitante, quiero ver noticias reales y actuales de revistas y canales de moda. | 🔴 | 3 |
 | HU-12 | Como usuario, quiero iniciar sesión para ver mi perfil. | 🔴 | 4 |
 | HU-13 | Como curador, quiero un panel privado para gestionar el contenido, al que solo accedan administradores y moderadores. | 🔴 | 4 |
-| HU-03 | Como visitante, quiero que la tarjeta haga un efecto *pop* elástico al pasar el mouse para sentir que el tablero está vivo. | 🔴 | 5 |
-| HU-04 | Como visitante, quiero que un doble clic me lleve directo a la noticia original. | 🔴 | 5 |
-| HU-05 | Como visitante, quiero que un clic me muestre noticias similares para seguir descubriendo contenido. | 🔴 | 6 |
-| HU-06 | Como visitante, quiero filtrar el tablero por etiqueta (diseñador, tendencia, tema). | 🟡 | 6 |
-| HU-07 | Como visitante, quiero que el sitio se vea bien en el celular. | 🟡 | 7 |
-| HU-08 | Como visitante, quiero una identidad visual editorial y moderna (rebranding). | 🟡 | 7 |
+| HU-14 | Como usuario, quiero mensajes claros cuando lleno mal un formulario o algo falla, para saber qué hacer. | 🔴 | 5 |
+| HU-15 | Como curador, quiero agregar posts de TikTok, Instagram o YouTube al tablero desde el panel. | 🟡 | 5 |
+| HU-03 | Como visitante, quiero que la tarjeta haga un efecto *pop* elástico al pasar el mouse para sentir que el tablero está vivo. | 🔴 | 6 |
+| HU-04 | Como visitante, quiero que un doble clic me lleve directo a la noticia original. | 🔴 | 6 |
+| HU-05 | Como visitante, quiero que un clic me muestre noticias similares para seguir descubriendo contenido. | 🔴 | 7 |
+| HU-06 | Como visitante, quiero filtrar el tablero por etiqueta (diseñador, tendencia, tema). | 🟡 | 7 |
+| HU-07 | Como visitante, quiero que el sitio se vea bien en el celular. | 🟡 | 8 |
+| HU-08 | Como visitante, quiero una identidad visual editorial y moderna (rebranding). | 🟡 | 8 |
 | HU-09 | Como visitante, quiero ver una vista previa del video o post incrustado. | 🟢 | Extra |
 | HU-10 | Como visitante, quiero guardar mis noticias favoritas. | 🟢 | Extra |
 
@@ -69,17 +71,30 @@ Historias de usuario del proyecto **MAU**, ordenadas por prioridad.
 - [x] `vercel.json` para que funcionen las rutas en producción
 - [x] Documentar en `docs/RUTAS.md` y probar 11 casos en el navegador
 
-### Sprint 5: Interacciones
+### Sprint 5: Validaciones y manejo de errores ✅
+- [x] Instalar Zod y crear esquemas en `src/schemas/`
+- [x] Hook `useZodForm` y componente `FormField` con mensajes accesibles
+- [x] Validar el formulario de login con Zod
+- [x] Formulario "Agregar un post" en Curaduría, validado con Zod
+- [x] Cliente HTTP central con tiempo límite y errores clasificados (`AppError`)
+- [x] Validar con Zod las respuestas de rss2json y DummyJSON
+- [x] Validar la sesión y los posts guardados en `localStorage`
+- [x] Avisos emergentes (`NotificationProvider` + `Toaster`)
+- [x] Estados de error con botón Reintentar y aviso de fuentes caídas
+- [x] `ErrorBoundary` para errores de renderizado
+- [x] Documentar en `docs/ERRORES.md` y probar 17 casos en el navegador
+
+### Sprint 6: Interacciones
 - [ ] Efecto *pop* elástico en *hover*
 - [ ] Hook `useClickOrDoubleClick` para distinguir clic y doble clic
 - [ ] Doble clic que abre la URL en una pestaña nueva
 
-### Sprint 6: Recomendaciones
+### Sprint 7: Recomendaciones
 - [ ] Algoritmo de similitud por etiquetas en común
 - [ ] Vista de recomendaciones con su propia ruta
 - [ ] Filtros por etiqueta
 
-### Sprint 7: Rebranding y producción
+### Sprint 8: Rebranding y producción
 - [ ] Paleta, tipografía y logo nuevos
 - [ ] Diseño responsivo
 - [ ] Optimización de imágenes y rendimiento
