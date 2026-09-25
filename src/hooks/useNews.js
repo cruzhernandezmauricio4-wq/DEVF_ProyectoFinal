@@ -12,7 +12,8 @@ export function useNews() {
   useEffect(() => {
     const controller = new AbortController()
 
-    getNews({ signal: controller.signal })
+    // Al reintentar se ignora la caché para volver a pedir las noticias.
+    getNews({ signal: controller.signal, force: attempt > 0 })
       .then((result) => {
         if (controller.signal.aborted) return
         setNews(result.news)

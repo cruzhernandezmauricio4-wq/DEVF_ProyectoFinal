@@ -49,13 +49,10 @@ function interleave(groups) {
 
 // Reúne las noticias de todas las fuentes. Si alguna falla, se muestran las demás
 // y se informa cuáles no respondieron.
-export async function getNews({ signal } = {}) {
+async function loadFeeds() {
   const results = await Promise.allSettled(
-    RSS_SOURCES.map((source) =>
-      fetchFeed(source.url, { signal }).then((items) => parseItems(items, source)),
-    ),
+    RSS_SOURCES.map((source) => fetchFeed(source.url).then((items) => parseItems(items, source))),
   )
-  signal?.throwIfAborted()
 
   const groups = []
   const failedSources = []
@@ -74,5 +71,36 @@ export async function getNews({ signal } = {}) {
       : new AppError('network', 'No se pudo cargar ninguna fuente de noticias.', { cause: firstError })
   }
 
+  return { groups, failedSources }
+}
+
+// Caché en memoria: las noticias se piden una vez y se reutilizan durante 5 minutos.
+// También comparte la petición en curso si dos componentes la piden a la vez.
+const CACHE_MS = 5 * 60 * 1000
+let cache = null // { at, promise }
+
+// Deja de esperar si el componente se desmonta, sin cancelar la carga compartida.
+function withSignal(promise, signal) {
+  if (!signal) return promise
+  return new Promise((resolve, reject) => {
+    if (signal.aborted) return reject(signal.reason)
+    signal.addEventListener('abort', () => reject(signal.reason), { once: true })
+    promise.then(resolve, reject)
+  })
+}
+
+// `force` ignora la caché (botón Reintentar).
+export async function getNews({ signal, force = false } = {}) {
+  if (force || !cache || Date.now() - cache.at > CACHE_MS) {
+    const promise = loadFeeds()
+    cache = { at: Date.now(), promise }
+    // Un error no se guarda en caché: el siguiente intento vuelve a pedir.
+    promise.catch(() => {
+      if (cache?.promise === promise) cache = null
+    })
+  }
+
+  const { groups, failedSources } = await withSignal(cache.promise, signal)
+  // Los posts curados se leen siempre frescos, para que aparezcan los recién agregados.
   return { news: interleave([...groups, getCuratedPosts()]), failedSources }
 }
