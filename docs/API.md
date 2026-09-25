@@ -12,6 +12,7 @@ MAU no tiene un servidor propio. Consume **APIs gratuitas** que ya existen:
 |---|---|---|---|
 | [rss2json](https://rss2json.com/) | API REST pública | Convierte feeds RSS de revistas y de YouTube a JSON | No (opcional para más resultados) |
 | `src/data/news.json` | Archivo local | Posts curados de TikTok e Instagram | No |
+| [DummyJSON Auth](https://dummyjson.com/docs/auth) | API REST pública | Login con tokens JWT, roles y datos protegidos. Ver [RUTAS.md](RUTAS.md) | No |
 
 ### ¿Por qué rss2json?
 

@@ -13,12 +13,14 @@ Historias de usuario del proyecto **MAU**, ordenadas por prioridad.
 | HU-01 | Como visitante, quiero ver las noticias de moda en un tablero disperso para explorarlas como un moodboard. | 🔴 | 2 |
 | HU-02 | Como visitante, quiero identificar el tipo de fuente (revista, YouTube, TikTok, Instagram) en cada tarjeta. | 🔴 | 2 |
 | HU-11 | Como visitante, quiero ver noticias reales y actuales de revistas y canales de moda. | 🔴 | 3 |
-| HU-03 | Como visitante, quiero que la tarjeta haga un efecto *pop* elástico al pasar el mouse para sentir que el tablero está vivo. | 🔴 | 4 |
-| HU-04 | Como visitante, quiero que un doble clic me lleve directo a la noticia original. | 🔴 | 4 |
-| HU-05 | Como visitante, quiero que un clic me muestre noticias similares para seguir descubriendo contenido. | 🔴 | 5 |
-| HU-06 | Como visitante, quiero filtrar el tablero por etiqueta (diseñador, tendencia, tema). | 🟡 | 5 |
-| HU-07 | Como visitante, quiero que el sitio se vea bien en el celular. | 🟡 | 6 |
-| HU-08 | Como visitante, quiero una identidad visual editorial y moderna (rebranding). | 🟡 | 6 |
+| HU-12 | Como usuario, quiero iniciar sesión para ver mi perfil. | 🔴 | 4 |
+| HU-13 | Como curador, quiero un panel privado para gestionar el contenido, al que solo accedan administradores y moderadores. | 🔴 | 4 |
+| HU-03 | Como visitante, quiero que la tarjeta haga un efecto *pop* elástico al pasar el mouse para sentir que el tablero está vivo. | 🔴 | 5 |
+| HU-04 | Como visitante, quiero que un doble clic me lleve directo a la noticia original. | 🔴 | 5 |
+| HU-05 | Como visitante, quiero que un clic me muestre noticias similares para seguir descubriendo contenido. | 🔴 | 6 |
+| HU-06 | Como visitante, quiero filtrar el tablero por etiqueta (diseñador, tendencia, tema). | 🟡 | 6 |
+| HU-07 | Como visitante, quiero que el sitio se vea bien en el celular. | 🟡 | 7 |
+| HU-08 | Como visitante, quiero una identidad visual editorial y moderna (rebranding). | 🟡 | 7 |
 | HU-09 | Como visitante, quiero ver una vista previa del video o post incrustado. | 🟢 | Extra |
 | HU-10 | Como visitante, quiero guardar mis noticias favoritas. | 🟢 | Extra |
 
@@ -56,17 +58,28 @@ Historias de usuario del proyecto **MAU**, ordenadas por prioridad.
 - [ ] Cambiar el mosaico por un acomodo disperso
 - [ ] Primer despliegue en Vercel
 
-### Sprint 4: Interacciones
+### Sprint 4: Rutas protegidas ✅
+- [x] Definir qué rutas son públicas, cuáles requieren sesión y cuáles requieren rol
+- [x] Instalar React Router y crear `Layout` con navegación
+- [x] Backend de autenticación con DummyJSON (JWT, roles, endpoints protegidos)
+- [x] `AuthProvider` + `useAuth` para compartir la sesión
+- [x] `ProtectedRoute` con protección por sesión y por rol
+- [x] Páginas `Login`, `Profile`, `Curation`, `Forbidden` (403) y `NotFound` (404)
+- [x] Validación y renovación del token con el backend al recargar
+- [x] `vercel.json` para que funcionen las rutas en producción
+- [x] Documentar en `docs/RUTAS.md` y probar 11 casos en el navegador
+
+### Sprint 5: Interacciones
 - [ ] Efecto *pop* elástico en *hover*
 - [ ] Hook `useClickOrDoubleClick` para distinguir clic y doble clic
 - [ ] Doble clic que abre la URL en una pestaña nueva
 
-### Sprint 5: Recomendaciones
+### Sprint 6: Recomendaciones
 - [ ] Algoritmo de similitud por etiquetas en común
-- [ ] Vista de recomendaciones con React Router
+- [ ] Vista de recomendaciones con su propia ruta
 - [ ] Filtros por etiqueta
 
-### Sprint 6: Rebranding y producción
+### Sprint 7: Rebranding y producción
 - [ ] Paleta, tipografía y logo nuevos
 - [ ] Diseño responsivo
 - [ ] Optimización de imágenes y rendimiento

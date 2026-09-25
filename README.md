@@ -51,6 +51,8 @@ El proyecto se basa en la opción **🛒 Catálogo Interactivo de Productos**, a
 ### Frontend
 - [React 19](https://react.dev/): interfaz basada en componentes
 - [Vite](https://vite.dev/): entorno de desarrollo y *build*
+- [React Router](https://reactrouter.com/): navegación entre páginas y rutas protegidas
+- Context API: sesión del usuario compartida en toda la app
 - CSS moderno: animaciones y transformaciones para el efecto elástico
 - [Vercel](https://vercel.com/): despliegue continuo a producción
 - Git y GitHub: control de versiones
@@ -58,8 +60,24 @@ El proyecto se basa en la opción **🛒 Catálogo Interactivo de Productos**, a
 ### Backend (fuentes de datos)
 - **[rss2json](https://rss2json.com/):** API REST gratuita que convierte los feeds RSS de revistas y canales de YouTube en JSON. No requiere clave y permite peticiones desde el navegador (CORS).
 - **JSON local** (`src/data/news.json`): posts curados de TikTok e Instagram, que no ofrecen una API pública gratuita.
+- **[DummyJSON Auth](https://dummyjson.com/docs/auth):** autenticación con tokens JWT, roles de usuario y endpoints protegidos.
 
 Toda la comunicación entre frontend y backend está documentada en **[docs/API.md](docs/API.md)**.
+
+---
+
+## 🔐 Rutas
+
+| Ruta | Página | Acceso |
+|---|---|---|
+| `/` | Tablero de noticias | 🌍 Pública |
+| `/login` | Iniciar sesión | 🌍 Pública |
+| `/perfil` | Perfil del usuario | 🔒 Con sesión |
+| `/curaduria` | Panel de curaduría | 🛡️ Rol `admin` o `moderator` |
+
+**Cuentas de prueba:** `emilys` / `emilyspass` (admin) · `oliviaw` / `oliviawpass` (moderator) · `averyp` / `averyppass` (user)
+
+La protección en React, la validación en el backend y las pruebas realizadas están en **[docs/RUTAS.md](docs/RUTAS.md)**.
 
 ---
 
@@ -72,7 +90,8 @@ DEVF_ProyectoFinal/
 │   ├── ACUERDOS.md           # Dinámica y acuerdos de trabajo
 │   ├── API.md                # Backend y comunicación con el frontend
 │   ├── BACKLOG.md            # Historias de usuario y plan de sprints
-│   └── GIT.md                # Guía del flujo de Git del proyecto
+│   ├── GIT.md                # Guía del flujo de Git del proyecto
+│   └── RUTAS.md              # Rutas protegidas y seguridad
 ├── public/                   # Archivos estáticos (favicon, etc.)
 ├── scripts/
 │   └── check-api.js          # Solicitud de muestra para probar las fuentes
@@ -80,33 +99,49 @@ DEVF_ProyectoFinal/
 │   ├── assets/               # Imágenes e íconos de la marca
 │   ├── components/           # Componentes visuales reutilizables
 │   │   ├── Board.jsx         # Tablero que acomoda las noticias
-│   │   ├── Header.jsx        # Logo y lema de MAU
+│   │   ├── Header.jsx        # Logo, navegación y usuario conectado
+│   │   ├── Layout.jsx        # Estructura común de todas las páginas
 │   │   ├── NewsCard.jsx      # Tarjeta de una noticia
 │   │   ├── PlatformBadge.jsx # Etiqueta de la plataforma (YouTube, TikTok…)
 │   │   └── StatusMessage.jsx # Mensajes de carga y error
 │   ├── config/
+│   │   ├── auth.js           # Backend de autenticación, roles y cuentas de prueba
 │   │   └── sources.js        # Lista de fuentes RSS y configuración de la API
+│   ├── context/
+│   │   ├── authContext.js    # Contexto de la sesión
+│   │   └── AuthProvider.jsx  # Maneja login, logout y restauración de sesión
 │   ├── data/
 │   │   └── news.json         # Posts curados de TikTok e Instagram
 │   ├── hooks/
+│   │   ├── useAuth.js        # Acceso a la sesión desde cualquier componente
 │   │   └── useNews.js        # Carga las noticias con estados de carga y error
 │   ├── pages/
-│   │   └── Home.jsx          # Página principal con el tablero
+│   │   ├── Curation.jsx      # 🛡️ Panel de curaduría (admin y moderator)
+│   │   ├── Forbidden.jsx     # 403: sin permiso
+│   │   ├── Home.jsx          # Página principal con el tablero
+│   │   ├── Login.jsx         # Formulario de inicio de sesión
+│   │   ├── NotFound.jsx      # 404: ruta inexistente
+│   │   └── Profile.jsx       # 🔒 Perfil del usuario
+│   ├── routes/
+│   │   └── ProtectedRoute.jsx # Protege rutas por sesión y por rol
 │   ├── services/             # Comunicación con el backend
+│   │   ├── authService.js    # Login, validación y renovación de tokens
 │   │   ├── rssClient.js      # Petición HTTP a rss2json
 │   │   └── newsService.js    # Une y normaliza las noticias de todas las fuentes
 │   ├── styles/
 │   │   └── variables.css     # Colores, tipografías y medidas de la marca
 │   ├── utils/
 │   │   ├── html.js           # Limpia texto con HTML
+│   │   ├── session.js        # Guarda los tokens y lee su expiración
 │   │   └── tags.js           # Genera etiquetas a partir del texto
-│   ├── App.jsx               # Componente raíz
+│   ├── App.jsx               # Componente raíz y definición de rutas
 │   ├── index.css             # Estilos globales
 │   └── main.jsx              # Punto de entrada de React
 ├── .env.example              # Variables de entorno de ejemplo
 ├── .gitignore                # Archivos que Git no debe subir
 ├── index.html
 ├── package.json
+├── vercel.json               # Hace que Vercel sirva las rutas de React
 └── vite.config.js
 ```
 
@@ -117,23 +152,29 @@ Cada componente tiene su propio archivo `.css` junto a él (ej. `NewsCard.jsx` +
 ```
 components / pages   →  muestran la información
         ↓
-hooks (useNews)      →  manejan estados: cargando, error, datos
+routes               →  deciden quién puede ver cada página
+        ↓
+context / hooks      →  manejan estados: sesión, cargando, error, datos
         ↓
 services             →  hablan con el backend y normalizan los datos
         ↓
-rss2json + JSON local
+rss2json + JSON local + DummyJSON Auth
 ```
 
 ### Árbol de componentes
 
 ```
 App
-├── Header
-└── Home (página)
-    ├── StatusMessage       (mientras carga o si hay error)
-    └── Board
-        └── NewsCard        (una por cada noticia)
-            └── PlatformBadge
+└── BrowserRouter
+    └── AuthProvider
+        └── Layout
+            ├── Header
+            └── (página según la ruta)
+                ├── Home  →  Board  →  NewsCard  →  PlatformBadge
+                ├── Login
+                ├── ProtectedRoute  →  Profile
+                ├── ProtectedRoute (roles)  →  Curation  |  Forbidden
+                └── NotFound
 ```
 
 ### Modelo de una noticia
@@ -194,6 +235,7 @@ El flujo de Git (ramas, commits y cómo actualizar el repositorio remoto) está 
 - [x] **Parte 1:** definición del proyecto, acuerdos de trabajo y repositorio en GitHub
 - [x] **Parte 2:** app creada con Vite, `.gitignore`, estructura de carpetas y primeros componentes
 - [x] **Parte 3:** backend definido (rss2json + JSON local), capa de servicios y noticias reales en el tablero
+- [x] **Parte 4:** rutas protegidas por sesión y por rol, con autenticación JWT validada en el backend
 - [ ] Tablero disperso
 - [ ] Efecto *pop* elástico e interacciones de clic y doble clic
 - [ ] Vista de recomendaciones
