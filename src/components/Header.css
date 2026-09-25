@@ -1,15 +1,21 @@
 .header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 2rem 1rem 1rem;
 }
 
 .header__logo {
-  margin: 0;
   font-family: var(--font-display);
   font-size: clamp(3rem, 10vw, 7rem);
+  font-weight: 700;
   line-height: 1;
   letter-spacing: -0.04em;
+  text-decoration: none;
 }
 
 .header__tagline {
@@ -18,4 +24,35 @@
   text-transform: uppercase;
   letter-spacing: 0.2em;
   font-size: 0.8rem;
+}
+
+.header__nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.25rem;
+  font-size: 0.9rem;
+}
+
+.header__nav > a:not(.button) {
+  color: var(--color-muted);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.header__nav > a:not(.button):hover,
+.header__nav > a.active:not(.button) {
+  color: var(--color-text);
+}
+
+.header__user {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.header__user img {
+  border-radius: 50%;
+  background: var(--color-surface);
 }
