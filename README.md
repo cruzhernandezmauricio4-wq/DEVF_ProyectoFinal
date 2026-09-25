@@ -5,6 +5,8 @@
 Proyecto Final del Módulo 6 (React avanzado) de **DEV.F**.
 Es la evolución de mi primer proyecto web, [Proyecto-DEFV](https://github.com/cruzhernandezmauricio4-wq/Proyecto-DEFV) ([ver sitio](https://cruzhernandezmauricio4-wq.github.io/Proyecto-DEFV/)), con un **rebranding completo**.
 
+![Vista actual de MAU](docs/capturas/parte-3.png)
+
 ---
 
 ## 📌 Descripción del proyecto
@@ -15,8 +17,8 @@ Cada tarjeta del tablero es una noticia, que puede venir de cualquier formato:
 
 | Formato | Ejemplos |
 |---|---|
-| 📰 Revista / artículo | Vogue, Hypebeast, blogs de moda |
-| ▶️ Video | YouTube |
+| 📰 Revista / artículo | Vogue, Dazed, Hypebeast, Harper's Bazaar, Fashionista |
+| ▶️ Video | YouTube (canal de Vogue) |
 | 🎵 Video corto | TikTok |
 | 📸 Post | Instagram |
 
@@ -46,12 +48,18 @@ El proyecto se basa en la opción **🛒 Catálogo Interactivo de Productos**, a
 
 ## 🛠️ Tecnologías
 
+### Frontend
 - [React 19](https://react.dev/): interfaz basada en componentes
 - [Vite](https://vite.dev/): entorno de desarrollo y *build*
 - CSS moderno: animaciones y transformaciones para el efecto elástico
-- JSON local como fuente de datos inicial (`src/data/news.json`)
 - [Vercel](https://vercel.com/): despliegue continuo a producción
 - Git y GitHub: control de versiones
+
+### Backend (fuentes de datos)
+- **[rss2json](https://rss2json.com/):** API REST gratuita que convierte los feeds RSS de revistas y canales de YouTube en JSON. No requiere clave y permite peticiones desde el navegador (CORS).
+- **JSON local** (`src/data/news.json`): posts curados de TikTok e Instagram, que no ofrecen una API pública gratuita.
+
+Toda la comunicación entre frontend y backend está documentada en **[docs/API.md](docs/API.md)**.
 
 ---
 
@@ -60,27 +68,42 @@ El proyecto se basa en la opción **🛒 Catálogo Interactivo de Productos**, a
 ```
 DEVF_ProyectoFinal/
 ├── docs/
+│   ├── capturas/             # Capturas de pantalla de cada entrega
 │   ├── ACUERDOS.md           # Dinámica y acuerdos de trabajo
+│   ├── API.md                # Backend y comunicación con el frontend
 │   ├── BACKLOG.md            # Historias de usuario y plan de sprints
 │   └── GIT.md                # Guía del flujo de Git del proyecto
 ├── public/                   # Archivos estáticos (favicon, etc.)
+├── scripts/
+│   └── check-api.js          # Solicitud de muestra para probar las fuentes
 ├── src/
 │   ├── assets/               # Imágenes e íconos de la marca
-│   ├── components/           # Componentes reutilizables
-│   │   ├── Header.jsx        # Logo y lema de MAU
+│   ├── components/           # Componentes visuales reutilizables
 │   │   ├── Board.jsx         # Tablero que acomoda las noticias
+│   │   ├── Header.jsx        # Logo y lema de MAU
 │   │   ├── NewsCard.jsx      # Tarjeta de una noticia
-│   │   └── PlatformBadge.jsx # Etiqueta de la fuente (YouTube, TikTok…)
+│   │   ├── PlatformBadge.jsx # Etiqueta de la plataforma (YouTube, TikTok…)
+│   │   └── StatusMessage.jsx # Mensajes de carga y error
+│   ├── config/
+│   │   └── sources.js        # Lista de fuentes RSS y configuración de la API
 │   ├── data/
-│   │   └── news.json         # Noticias curadas con sus etiquetas
-│   ├── hooks/                # Hooks personalizados (próximos sprints)
+│   │   └── news.json         # Posts curados de TikTok e Instagram
+│   ├── hooks/
+│   │   └── useNews.js        # Carga las noticias con estados de carga y error
 │   ├── pages/
 │   │   └── Home.jsx          # Página principal con el tablero
+│   ├── services/             # Comunicación con el backend
+│   │   ├── rssClient.js      # Petición HTTP a rss2json
+│   │   └── newsService.js    # Une y normaliza las noticias de todas las fuentes
 │   ├── styles/
 │   │   └── variables.css     # Colores, tipografías y medidas de la marca
+│   ├── utils/
+│   │   ├── html.js           # Limpia texto con HTML
+│   │   └── tags.js           # Genera etiquetas a partir del texto
 │   ├── App.jsx               # Componente raíz
 │   ├── index.css             # Estilos globales
 │   └── main.jsx              # Punto de entrada de React
+├── .env.example              # Variables de entorno de ejemplo
 ├── .gitignore                # Archivos que Git no debe subir
 ├── index.html
 ├── package.json
@@ -89,12 +112,25 @@ DEVF_ProyectoFinal/
 
 Cada componente tiene su propio archivo `.css` junto a él (ej. `NewsCard.jsx` + `NewsCard.css`).
 
+### Capas de la aplicación
+
+```
+components / pages   →  muestran la información
+        ↓
+hooks (useNews)      →  manejan estados: cargando, error, datos
+        ↓
+services             →  hablan con el backend y normalizan los datos
+        ↓
+rss2json + JSON local
+```
+
 ### Árbol de componentes
 
 ```
 App
 ├── Header
 └── Home (página)
+    ├── StatusMessage       (mientras carga o si hay error)
     └── Board
         └── NewsCard        (una por cada noticia)
             └── PlatformBadge
@@ -102,17 +138,23 @@ App
 
 ### Modelo de una noticia
 
+Todas las fuentes se convierten a este mismo formato:
+
 ```json
 {
-  "id": 1,
-  "title": "Rick Owens y la estética de lo oscuro",
-  "source": "podcast",
-  "platform": "youtube",
-  "url": "https://www.youtube.com/...",
-  "image": "",
-  "tags": ["rick-owens", "vanguardia", "entrevista"]
+  "id": "https://www.vogue.com/fashion-shows/...",
+  "title": "Emporio Armani Spring 2027 Ready-to-Wear",
+  "excerpt": "Resumen corto de la noticia…",
+  "source": "Vogue",
+  "platform": "web",
+  "url": "https://www.vogue.com/fashion-shows/...",
+  "image": "https://assets.vogue.com/photos/...jpg",
+  "date": "2026-09-24 22:58:17",
+  "tags": ["pasarela", "runway"]
 }
 ```
+
+`platform` puede ser `web`, `youtube`, `tiktok` o `instagram`.
 
 ---
 
@@ -125,6 +167,8 @@ npm install
 npm run dev
 ```
 
+**Variables de entorno (opcional):** sin clave, cada fuente devuelve hasta 10 noticias. Con una clave gratuita de rss2json se piden 20. Para usarla, copia `.env.example` como `.env.local` y agrega la clave.
+
 Otros comandos:
 
 | Comando | Qué hace |
@@ -133,6 +177,7 @@ Otros comandos:
 | `npm run build` | Genera la versión de producción en `dist/` |
 | `npm run preview` | Sirve localmente la versión de producción |
 | `npm run lint` | Revisa el código con oxlint |
+| `npm run api:check` | Hace una solicitud de muestra a cada fuente y muestra si responde |
 
 ---
 
@@ -147,8 +192,9 @@ El flujo de Git (ramas, commits y cómo actualizar el repositorio remoto) está 
 ## 🗺️ Estado
 
 - [x] **Parte 1:** definición del proyecto, acuerdos de trabajo y repositorio en GitHub
-- [x] **Parte 2:** app creada con Vite, `.gitignore`, estructura de carpetas y primeros componentes (`Header`, `Board`, `NewsCard`, `PlatformBadge`)
-- [ ] Tablero disperso con noticias reales
+- [x] **Parte 2:** app creada con Vite, `.gitignore`, estructura de carpetas y primeros componentes
+- [x] **Parte 3:** backend definido (rss2json + JSON local), capa de servicios y noticias reales en el tablero
+- [ ] Tablero disperso
 - [ ] Efecto *pop* elástico e interacciones de clic y doble clic
 - [ ] Vista de recomendaciones
 - [ ] Rebranding visual final y despliegue en Vercel
