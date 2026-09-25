@@ -1,23 +1,75 @@
 .news-card {
-  break-inside: avoid;
+  --mx: 50%;
+  --my: 20%;
+  position: relative;
   margin-bottom: var(--gap);
   border-radius: var(--radius);
-  background: var(--color-surface);
+  background: var(--silver-200);
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.8) inset, 0 8px 24px rgb(28 29 33 / 0.12);
+  transform-origin: center;
+  transition:
+    transform 0.55s var(--ease-elastic),
+    border-radius 0.55s var(--ease-elastic),
+    box-shadow 0.3s ease;
+  will-change: transform;
+}
+
+.news-card__link {
+  position: relative;
+  display: block;
   overflow: hidden;
+  border-radius: inherit;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Borde de vidrio y reflejo de luz que sigue al cursor */
+.news-card__link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: var(--glass-edge);
+  background: radial-gradient(
+    circle at var(--mx) var(--my),
+    rgb(255 255 255 / 0.55),
+    rgb(255 255 255 / 0.12) 28%,
+    transparent 55%
+  );
+  mix-blend-mode: soft-light;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .news-card__image {
   width: 100%;
+  min-height: 180px;
   object-fit: cover;
+  transition: transform 0.8s var(--ease-elastic);
 }
 
 /* Las miniaturas de YouTube vienen en 4:3 con barras negras; se recortan a 16:9. */
 .news-card--youtube .news-card__image {
   aspect-ratio: 16 / 9;
+  min-height: 0;
 }
 
-.news-card__body {
-  padding: 1rem;
+/* Panel de vidrio líquido sobre la foto */
+.news-card__caption {
+  position: absolute;
+  right: 0.6rem;
+  bottom: 0.6rem;
+  left: 0.6rem;
+  padding: 0.75rem 0.9rem 0.85rem;
+  border: 1px solid var(--glass-border);
+  border-radius: calc(var(--radius) - 8px);
+  background: var(--glass-bg-strong);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-edge), 0 6px 18px rgb(28 29 33 / 0.18);
+  transition: transform 0.55s var(--ease-elastic);
 }
 
 .news-card__meta {
@@ -25,33 +77,89 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
+  margin-bottom: 0.35rem;
 }
 
 .news-card__source {
-  font-size: 0.8rem;
+  color: var(--color-muted);
+  font-size: 0.68rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.14em;
 }
 
 .news-card__title {
-  margin: 0.75rem 0;
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  line-height: 1.2;
-}
-
-.news-card__title a {
-  text-decoration: none;
-}
-
-.news-card__tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  display: -webkit-box;
   margin: 0;
-  padding: 0;
-  list-style: none;
-  color: var(--color-muted);
-  font-size: 0.8rem;
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 400;
+  line-height: 1.1;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
+/* ─── Pop elástico ───
+   Al pasar el mouse la tarjeta crece y se deforma como gelatina (se estira a lo
+   ancho, luego a lo alto, rebota y se queda un poco más grande). */
+.news-card:hover,
+.news-card:focus-within {
+  z-index: 2;
+  transform: scale(1.045);
+  border-radius: 30px;
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.9) inset, 0 22px 50px rgb(28 29 33 / 0.28);
+  animation: jelly-pop 0.7s ease-out;
+}
+
+.news-card:hover .news-card__link::after {
+  opacity: 1;
+}
+
+.news-card:hover .news-card__image {
+  transform: scale(1.06);
+}
+
+.news-card:hover .news-card__caption {
+  transform: translateY(-3px);
+}
+
+.news-card:active {
+  transform: scale(1.01);
+  transition-duration: 0.12s;
+}
+
+@keyframes jelly-pop {
+  0% {
+    transform: scale(1, 1);
+    border-radius: var(--radius);
+  }
+  22% {
+    transform: scale(1.1, 0.94);
+    border-radius: 34px 20px 34px 20px;
+  }
+  42% {
+    transform: scale(0.97, 1.08);
+    border-radius: 20px 34px 20px 34px;
+  }
+  62% {
+    transform: scale(1.07, 1.01);
+    border-radius: 32px 26px 30px 26px;
+  }
+  80% {
+    transform: scale(1.03, 1.06);
+  }
+  100% {
+    transform: scale(1.045);
+    border-radius: 30px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .news-card:hover,
+  .news-card:focus-within {
+    animation: none;
+    transform: scale(1.02);
+  }
 }

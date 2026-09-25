@@ -1,18 +1,26 @@
-/* Acomodo tipo mosaico. Se reemplazará por el tablero disperso más adelante. */
+/* Mosaico tipo moodboard: columnas de alturas libres, como recortes en una pared. */
 .board {
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 1rem;
-  columns: 260px;
+  columns: 280px;
   column-gap: var(--gap);
+}
+
+.board__item {
+  position: relative;
+  break-inside: avoid;
+  padding-top: 2px; /* evita que la sombra se corte entre columnas */
+}
+
+/* La tarjeta con pop queda encima de sus vecinas */
+.board__item:hover,
+.board__item:focus-within {
+  z-index: 2;
 }
 
 /* Mientras el filtrado va un paso atrás de lo que se escribe (useDeferredValue) */
 .board--stale {
   opacity: 0.6;
   transition: opacity 150ms;
-}
-
-.board__item {
-  break-inside: avoid;
 }
