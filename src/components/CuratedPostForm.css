@@ -10,3 +10,8 @@
   grid-column: 1 / -1;
   justify-self: start;
 }
+
+.curated-form.glass {
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border-radius: var(--radius);
+}

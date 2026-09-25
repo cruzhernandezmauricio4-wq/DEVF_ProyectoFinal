@@ -6,7 +6,7 @@ function Toaster({ notifications, onDismiss }) {
   return (
     <div className="toaster" aria-live="polite">
       {notifications.map(({ id, tone, message }) => (
-        <div key={id} className={`toast toast--${tone}`} role={tone === 'error' ? 'alert' : 'status'}>
+        <div key={id} className={`toast toast--${tone} glass`} role={tone === 'error' ? 'alert' : 'status'}>
           <span className="toast__icon" aria-hidden="true">
             {ICONS[tone]}
           </span>

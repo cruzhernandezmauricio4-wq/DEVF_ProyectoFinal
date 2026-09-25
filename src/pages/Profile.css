@@ -7,8 +7,9 @@
 }
 
 .profile__avatar {
+  border: 3px solid rgb(255 255 255 / 0.9);
   border-radius: 50%;
-  background: var(--color-surface);
+  background: var(--silver-200);
 }
 
 .profile__username {
@@ -25,8 +26,9 @@
 
 .profile__details div {
   padding: 1rem;
-  border-radius: var(--radius);
-  background: var(--color-surface);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  background: rgb(255 255 255 / 0.5);
 }
 
 .profile__details dt {
@@ -44,7 +46,7 @@
 .profile__favorites {
   margin-bottom: 2rem;
   padding: 1.5rem;
-  border: 1px dashed #333;
+  border-style: dashed;
   border-radius: var(--radius);
   color: var(--color-muted);
 }
@@ -57,4 +59,9 @@
 
 .profile__favorites p {
   margin: 0;
+}
+
+.profile.glass {
+  padding: 1.5rem;
+  border-radius: var(--radius);
 }

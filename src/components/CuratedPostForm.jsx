@@ -28,7 +28,7 @@ function CuratedPostForm({ onAdded }) {
   }
 
   return (
-    <form className="form curated-form" onSubmit={form.handleSubmit(onSubmit)} noValidate>
+    <form className="form curated-form glass" onSubmit={form.handleSubmit(onSubmit)} noValidate>
       <FormField label="Título" {...form.field('title')} />
       <FormField label="Plataforma" options={PLATFORM_OPTIONS} {...form.field('platform')} />
       <FormField

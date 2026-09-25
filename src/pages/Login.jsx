@@ -34,7 +34,7 @@ function Login() {
       <h1 className="page__title">Entrar</h1>
       <p className="page__lead">Inicia sesión para ver tu perfil y el panel de curaduría.</p>
 
-      <form className="form" onSubmit={form.handleSubmit(onSubmit)} noValidate>
+      <form className="form login__form glass" onSubmit={form.handleSubmit(onSubmit)} noValidate>
         <FormField label="Usuario" autoComplete="username" {...form.field('username')} />
         <FormField
           label="Contraseña"

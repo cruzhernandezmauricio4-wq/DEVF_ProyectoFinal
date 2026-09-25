@@ -48,13 +48,17 @@ El tablero de tareas se lleva en **GitHub Projects**, con las columnas *Por hace
 
 | Rama | Uso |
 |---|---|
-| `main` | Código estable. Se despliega automáticamente en Vercel |
-| `develop` | Integración de funcionalidades terminadas |
-| `feature/<nombre>` | Una rama por funcionalidad (ej. `feature/elastic-hover`) |
-| `fix/<nombre>` | Corrección de errores |
+| `main` | Código estable. Vercel lo publica automáticamente en **producción** |
+| `sprint-<n>-<tema>` | Una rama por sprint/entrega (ej. `sprint-7-despliegue`), para ver qué se hizo en cada uno |
 
-**Flujo:** `feature/*` → Pull Request → `develop` → Pull Request → `main`.
-Cada Pull Request genera una **vista previa en Vercel** para revisar antes de fusionar.
+**Flujo:** `sprint-<n>-<tema>` → Pull Request → `main`.
+
+En cada Pull Request:
+1. **GitHub Actions (CI)** revisa el código: linter, pruebas y build. Debe quedar en ✅.
+2. **Vercel** publica una **vista previa** con su propia URL para probar los cambios antes de fusionar.
+3. Al fusionar en `main`, Vercel despliega a producción.
+
+Detalle en [DESPLIEGUE.md](DESPLIEGUE.md).
 
 ### Commits
 
@@ -80,7 +84,7 @@ refactor: extrae lógica de recomendaciones a un hook
 - Variables y funciones en **camelCase**.
 - Colores, tipografías y espaciados de la marca como **variables CSS** en `src/styles/`.
 - Solo componentes funcionales con hooks.
-- Antes de cada commit, correr `npm run lint` y `npm run build`.
+- Antes de cada commit, correr `npm run lint`, `npm test` y `npm run build` (lo mismo que revisa la CI).
 
 ---
 
@@ -90,8 +94,9 @@ Una historia está terminada cuando:
 
 - [ ] Funciona en escritorio y en móvil
 - [ ] No hay errores en consola ni en `npm run lint`
-- [ ] `npm run build` termina sin errores
-- [ ] Está fusionada en `develop` mediante Pull Request
+- [ ] `npm test` y `npm run build` terminan sin errores
+- [ ] La CI de GitHub Actions está en ✅
+- [ ] Está fusionada en `main` mediante Pull Request
 - [ ] La vista previa en Vercel se revisó
 - [ ] El README está actualizado si cambió algo relevante
 

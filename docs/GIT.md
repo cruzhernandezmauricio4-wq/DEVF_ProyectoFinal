@@ -36,8 +36,8 @@ Vite crea automáticamente el `.gitignore`, que evita subir:
 # 1. Traer lo último del remoto
 git pull origin main
 
-# 2. Crear una rama para la funcionalidad
-git switch -c feature/nombre-de-la-funcionalidad
+# 2. Crear la rama del sprint
+git switch -c sprint-8-interacciones
 
 # 3. Revisar qué cambió
 git status
@@ -50,12 +50,12 @@ git add src/components/NewsCard.jsx src/components/NewsCard.css
 git commit -m "feat: agrega componente NewsCard"
 
 # 6. Subir la rama a GitHub
-git push -u origin feature/nombre-de-la-funcionalidad
+git push -u origin sprint-8-interacciones
 ```
 
-Luego, en GitHub: **Pull Request → revisar → Merge** a `main`.
+Luego, en GitHub, abre un **Pull Request** hacia `main`, espera a que la **CI** esté en ✅, revisa la **vista previa de Vercel** y fusiona con **Merge**.
 
-> Mientras el proyecto sea individual y pequeño, está bien hacer commits directo a `main`. Usar ramas es la práctica recomendada conforme el proyecto crezca.
+Cada sprint vive en su propia rama (`sprint-1-definicion`, `sprint-2-estructura`…), así el historial muestra qué se hizo en cada entrega.
 
 ---
 
@@ -88,6 +88,9 @@ Formato: `tipo: descripción en presente y en minúsculas`
 
 ## 5. Antes de hacer push
 
-- [ ] `npm run lint` sin errores
+Lo mismo que revisa la CI en GitHub Actions:
+
+- [ ] `npm run lint:ci` sin errores ni avisos
+- [ ] `npm test` con todas las pruebas en verde
 - [ ] `npm run build` sin errores
 - [ ] `git status` no muestra archivos que no deberían subirse

@@ -1,3 +1,6 @@
+@import '@fontsource-variable/inter';
+@import '@fontsource/instrument-serif';
+@import '@fontsource/instrument-serif/400-italic.css';
 @import './styles/variables.css';
 
 *,
@@ -12,6 +15,22 @@ body {
   font-family: var(--font-body);
   background: var(--color-bg);
   color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Fondo plateado con reflejos perlados. Va en una capa fija para que el vidrio
+   tenga algo que refractar y para no repintar al hacer scroll. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(55vw 45vh at 8% 2%, rgb(210 222 255 / 0.95), transparent 62%),
+    radial-gradient(45vw 40vh at 96% 12%, rgb(255 226 238 / 0.75), transparent 60%),
+    radial-gradient(55vw 55vh at 72% 100%, rgb(214 250 238 / 0.7), transparent 62%),
+    radial-gradient(40vw 35vh at 20% 85%, rgb(255 244 222 / 0.7), transparent 60%),
+    linear-gradient(160deg, #f5f6f9 0%, #dadde3 42%, #eef0f3 58%, #cdd1d8 100%);
 }
 
 a {
@@ -24,22 +43,39 @@ img {
 }
 
 button,
-input {
+input,
+select {
   font: inherit;
 }
 
-/* Contenedor de las páginas internas (login, perfil, curaduría) */
+:focus-visible {
+  outline: 2px solid var(--graphite);
+  outline-offset: 3px;
+}
+
+/* Superficie de vidrio líquido reutilizable */
+.glass {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-edge), var(--glass-shadow);
+}
+
+/* Contenedor de las páginas internas (login, perfil, curaduría, noticia) */
 .page {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 2rem 1rem 4rem;
+  padding: 1.5rem 1rem 4rem;
 }
 
 .page__title {
   margin: 0 0 0.5rem;
   font-family: var(--font-display);
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  line-height: 1.05;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.01em;
 }
 
 .page__lead {
@@ -51,42 +87,60 @@ input {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.6rem 1.2rem;
-  border: 1px solid var(--color-accent);
+  gap: 0.4rem;
+  padding: 0.7rem 1.35rem;
+  border: 1px solid rgb(255 255 255 / 0.15);
   border-radius: 999px;
-  background: var(--color-accent);
-  color: var(--color-bg);
+  background: var(--button-metal);
+  color: var(--color-on-accent);
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25), 0 6px 16px rgb(28 29 33 / 0.22);
+  transition: transform 0.35s var(--ease-elastic), box-shadow 0.2s;
+}
+
+.button:hover {
+  transform: translateY(-1px) scale(1.03);
+}
+
+.button:active {
+  transform: scale(0.97);
 }
 
 .button:disabled {
   opacity: 0.5;
   cursor: wait;
+  transform: none;
 }
 
 .button--ghost {
-  background: transparent;
-  border-color: var(--color-muted);
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border-color: var(--glass-border);
   color: var(--color-text);
+  box-shadow: var(--glass-edge), 0 4px 12px rgb(28 29 33 / 0.08);
 }
 
 .role-badge {
   display: inline-block;
-  padding: 0.15rem 0.6rem;
+  padding: 0.2rem 0.65rem;
+  border: 1px solid var(--silver-300);
   border-radius: 999px;
-  background: var(--color-bg);
-  border: 1px solid var(--color-muted);
-  font-size: 0.75rem;
+  background: rgb(255 255 255 / 0.6);
+  color: var(--color-muted);
+  font-size: 0.7rem;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
 }
 
 .role-badge--admin,
 .role-badge--moderator {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
+  border-color: transparent;
+  background: var(--button-metal);
+  color: var(--color-on-accent);
 }
 
 /* Formularios */
@@ -98,18 +152,30 @@ input {
 .form-alert {
   margin: 0;
   padding: 0.75rem 1rem;
-  border: 1px solid var(--color-error);
-  border-radius: 12px;
-  background: rgb(255 107 107 / 0.08);
+  border: 1px solid rgb(179 38 30 / 0.35);
+  border-radius: var(--radius-sm);
+  background: rgb(255 235 233 / 0.75);
   color: var(--color-error);
 }
 
 .notice {
-  max-width: var(--max-width);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: calc(var(--max-width) - 2rem);
   margin: 0 auto 1rem;
   padding: 0.75rem 1rem;
-  border-radius: 12px;
-  background: var(--color-surface);
+  border-radius: var(--radius-sm);
   color: var(--color-muted);
   font-size: 0.9rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

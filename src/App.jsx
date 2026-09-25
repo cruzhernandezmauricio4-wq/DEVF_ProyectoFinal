@@ -9,6 +9,7 @@ import ProtectedRoute from './routes/ProtectedRoute'
 
 // React.lazy: estas páginas se descargan solo cuando alguien las visita.
 // Quien solo ve el tablero no descarga el código del login, perfil ni curaduría.
+const NewsDetail = lazy(() => import('./pages/NewsDetail'))
 const Login = lazy(() => import('./pages/Login'))
 const Profile = lazy(() => import('./pages/Profile'))
 const Curation = lazy(() => import('./pages/Curation'))
@@ -23,6 +24,7 @@ function App() {
             <Route element={<Layout />}>
               {/* Rutas públicas */}
               <Route index element={<Home />} />
+              <Route path="noticia/:id" element={<NewsDetail />} />
               <Route path="login" element={<Login />} />
 
               {/* Requieren sesión */}
