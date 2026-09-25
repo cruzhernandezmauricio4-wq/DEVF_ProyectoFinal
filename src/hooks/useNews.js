@@ -11,9 +11,12 @@ export function useNews() {
     const controller = new AbortController()
 
     getNews({ signal: controller.signal })
-      .then(setNews)
+      .then((items) => {
+        if (!controller.signal.aborted) setNews(items)
+      })
       .catch((err) => {
-        if (err.name !== 'AbortError') setError(err)
+        // Una carga cancelada (al desmontar o por StrictMode en desarrollo) no es un error real.
+        if (!controller.signal.aborted) setError(err)
       })
       .finally(() => {
         if (!controller.signal.aborted) setLoading(false)
