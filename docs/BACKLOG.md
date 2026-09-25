@@ -18,12 +18,14 @@ Historias de usuario del proyecto **MAU**, ordenadas por prioridad.
 | HU-14 | Como usuario, quiero mensajes claros cuando lleno mal un formulario o algo falla, para saber qué hacer. | 🔴 | 5 |
 | HU-15 | Como curador, quiero agregar posts de TikTok, Instagram o YouTube al tablero desde el panel. | 🟡 | 5 |
 | HU-16 | Como visitante, quiero que buscar y filtrar se sienta instantáneo, incluso en el celular. | 🔴 | 6 |
-| HU-03 | Como visitante, quiero que la tarjeta haga un efecto *pop* elástico al pasar el mouse para sentir que el tablero está vivo. | 🔴 | 7 |
-| HU-04 | Como visitante, quiero que un doble clic me lleve directo a la noticia original. | 🔴 | 7 |
-| HU-05 | Como visitante, quiero que un clic me muestre noticias similares para seguir descubriendo contenido. | 🔴 | 8 |
+| HU-17 | Como visitante, quiero entrar a MAU desde una URL pública para verlo sin instalar nada. | 🔴 | 7 |
+| HU-18 | Como equipo, queremos que cada cambio se revise automáticamente antes de publicarse. | 🟡 | 7 |
+| HU-03 | Como visitante, quiero que la tarjeta haga un efecto *pop* elástico al pasar el mouse para sentir que el tablero está vivo. | 🔴 | 8 |
+| HU-04 | Como visitante, quiero que un doble clic me lleve directo a la noticia original. | 🔴 | 8 |
+| HU-05 | Como visitante, quiero que un clic me muestre noticias similares para seguir descubriendo contenido. | 🔴 | 9 |
 | HU-06 | Como visitante, quiero filtrar el tablero por etiqueta (diseñador, tendencia, tema). | 🟡 | 6 ✅ |
-| HU-07 | Como visitante, quiero que el sitio se vea bien en el celular. | 🟡 | 9 |
-| HU-08 | Como visitante, quiero una identidad visual editorial y moderna (rebranding). | 🟡 | 9 |
+| HU-07 | Como visitante, quiero que el sitio se vea bien en el celular. | 🟡 | 10 |
+| HU-08 | Como visitante, quiero una identidad visual editorial y moderna (rebranding). | 🟡 | 10 |
 | HU-09 | Como visitante, quiero ver una vista previa del video o post incrustado. | 🟢 | Extra |
 | HU-10 | Como visitante, quiero guardar mis noticias favoritas. | 🟢 | Extra |
 
@@ -59,7 +61,7 @@ Historias de usuario del proyecto **MAU**, ordenadas por prioridad.
 - [x] Documentar la comunicación en `docs/API.md`
 - [ ] Llenar `news.json` con posts reales de TikTok e Instagram
 - [ ] Cambiar el mosaico por un acomodo disperso
-- [ ] Primer despliegue en Vercel
+- [x] Primer despliegue en Vercel → movido al Sprint 7
 
 ### Sprint 4: Rutas protegidas ✅
 - [x] Definir qué rutas son públicas, cuáles requieren sesión y cuáles requieren rol
@@ -97,17 +99,27 @@ Historias de usuario del proyecto **MAU**, ordenadas por prioridad.
 - [x] `React.lazy` + `Suspense` para Login, Perfil, Curaduría y 404
 - [x] Medir después de optimizar y documentar en `docs/OPTIMIZACION.md`
 
-### Sprint 7: Interacciones
+### Sprint 7: Despliegue y CI/CD
+- [x] `vercel.json`: build, rutas de React, caché de archivos y encabezados de seguridad
+- [x] Pruebas automáticas con Vitest (37 pruebas)
+- [x] CI con GitHub Actions: linter sin avisos, pruebas y build en cada PR
+- [x] Verificar el build de producción con las reglas de Vercel en local
+- [x] Corregir el `eval` de Zod bloqueado por la CSP (`jitless`)
+- [x] Guía paso a paso en `docs/DESPLIEGUE.md`
+- [ ] Crear la cuenta de Vercel e importar el repositorio
+- [ ] Pegar la URL de producción en el README y en GitHub
+- [ ] Proteger `main` para exigir la CI en verde
+
+### Sprint 8: Interacciones
 - [ ] Efecto *pop* elástico en *hover*
 - [ ] Hook `useClickOrDoubleClick` para distinguir clic y doble clic
 - [ ] Doble clic que abre la URL en una pestaña nueva
 
-### Sprint 8: Recomendaciones
+### Sprint 9: Recomendaciones
 - [ ] Algoritmo de similitud por etiquetas en común
 - [ ] Vista de recomendaciones con su propia ruta
 
-### Sprint 9: Rebranding y producción
+### Sprint 10: Rebranding
 - [ ] Paleta, tipografía y logo nuevos
 - [ ] Diseño responsivo
-- [ ] Optimización de imágenes y rendimiento
-- [ ] Despliegue final en Vercel con dominio de producción
+- [ ] Optimización de imágenes

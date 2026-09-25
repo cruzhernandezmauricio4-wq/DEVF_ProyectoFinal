@@ -2,10 +2,14 @@
 
 > Tablero interactivo de noticias de moda, construido con React y desplegado en Vercel.
 
+[![CI](https://github.com/cruzhernandezmauricio4-wq/DEVF_ProyectoFinal/actions/workflows/ci.yml/badge.svg)](https://github.com/cruzhernandezmauricio4-wq/DEVF_ProyectoFinal/actions/workflows/ci.yml)
+
+🔗 **Demo:** _(pega aquí la URL de Vercel, ej. `https://mau-moda.vercel.app`)_
+
 Proyecto Final del Módulo 6 (React avanzado) de **DEV.F**.
 Es la evolución de mi primer proyecto web, [Proyecto-DEFV](https://github.com/cruzhernandezmauricio4-wq/Proyecto-DEFV) ([ver sitio](https://cruzhernandezmauricio4-wq.github.io/Proyecto-DEFV/)), con un **rebranding completo**.
 
-![Vista actual de MAU](docs/capturas/parte-3.png)
+![Vista actual de MAU](docs/capturas/parte-6-filtros.png)
 
 ---
 
@@ -109,15 +113,28 @@ El análisis completo y cómo se midió están en **[docs/OPTIMIZACION.md](docs/
 
 ---
 
+## 🚀 Despliegue y CI/CD
+
+- **CD con Vercel:** cada push a una rama crea una vista previa; cada fusión a `main` se publica en producción.
+- **CI con GitHub Actions:** en cada Pull Request se corren el linter, **37 pruebas automáticas** (Vitest) y el build. Si algo falla, el PR queda en ❌.
+- **`vercel.json`:** rutas de React, caché de un año para los archivos con hash y encabezados de seguridad (CSP, anti-iframe, etc.).
+
+Paso a paso para desplegar, cómo proteger `main` y solución de problemas: **[docs/DESPLIEGUE.md](docs/DESPLIEGUE.md)**.
+
+---
+
 ## 📁 Estructura del proyecto
 
 ```
 DEVF_ProyectoFinal/
+├── .github/workflows/
+│   └── ci.yml                # CI: linter, pruebas y build en cada PR
 ├── docs/
 │   ├── capturas/             # Capturas de pantalla de cada entrega
 │   ├── ACUERDOS.md           # Dinámica y acuerdos de trabajo
 │   ├── API.md                # Backend y comunicación con el frontend
 │   ├── BACKLOG.md            # Historias de usuario y plan de sprints
+│   ├── DESPLIEGUE.md         # Vercel, CI/CD y configuración de producción
 │   ├── ERRORES.md            # Validaciones con Zod y manejo de errores
 │   ├── GIT.md                # Guía del flujo de Git del proyecto
 │   ├── OPTIMIZACION.md       # Análisis y mediciones de rendimiento
@@ -143,7 +160,8 @@ DEVF_ProyectoFinal/
 │   ├── config/
 │   │   ├── auth.js           # Backend de autenticación, roles y cuentas de prueba
 │   │   ├── platforms.js      # Nombre e ícono de cada plataforma
-│   │   └── sources.js        # Lista de fuentes RSS y configuración de la API
+│   │   ├── sources.js        # Lista de fuentes RSS y configuración de la API
+│   │   └── zod.js            # Desactiva el eval de Zod (compatible con la CSP)
 │   ├── context/
 │   │   ├── authContext.js    # Contexto de la sesión
 │   │   ├── AuthProvider.jsx  # Maneja login, logout y restauración de sesión
@@ -191,11 +209,11 @@ DEVF_ProyectoFinal/
 ├── .gitignore                # Archivos que Git no debe subir
 ├── index.html
 ├── package.json
-├── vercel.json               # Hace que Vercel sirva las rutas de React
+├── vercel.json               # Vercel: build, rutas de React, caché y seguridad
 └── vite.config.js
 ```
 
-Cada componente tiene su propio archivo `.css` junto a él (ej. `NewsCard.jsx` + `NewsCard.css`).
+Cada componente tiene su propio archivo `.css` junto a él (ej. `NewsCard.jsx` + `NewsCard.css`). Las pruebas viven junto al código que prueban (ej. `httpClient.js` + `httpClient.test.js`).
 
 ### Capas de la aplicación
 
@@ -272,6 +290,9 @@ Otros comandos:
 | `npm run build` | Genera la versión de producción en `dist/` |
 | `npm run preview` | Sirve localmente la versión de producción |
 | `npm run lint` | Revisa el código con oxlint |
+| `npm run lint:ci` | Igual, pero falla con cualquier aviso (lo usa la CI) |
+| `npm test` | Corre las pruebas automáticas con Vitest |
+| `npm run test:watch` | Vuelve a correr las pruebas al guardar |
 | `npm run api:check` | Hace una solicitud de muestra a cada fuente y muestra si responde |
 
 ---
@@ -292,10 +313,11 @@ El flujo de Git (ramas, commits y cómo actualizar el repositorio remoto) está 
 - [x] **Parte 4:** rutas protegidas por sesión y por rol, con autenticación JWT validada en el backend
 - [x] **Parte 5:** validaciones con Zod y manejo de errores de formularios y peticiones al backend
 - [x] **Parte 6:** optimización con `useMemo`, `useCallback`, `memo`, `useDeferredValue`, `lazy` y caché, más filtros del tablero
+- [x] **Parte 7:** despliegue en Vercel, CI con GitHub Actions, pruebas con Vitest y encabezados de seguridad
 - [ ] Tablero disperso
 - [ ] Efecto *pop* elástico e interacciones de clic y doble clic
 - [ ] Vista de recomendaciones
-- [ ] Rebranding visual final y despliegue en Vercel
+- [ ] Rebranding visual final
 
 ---
 
