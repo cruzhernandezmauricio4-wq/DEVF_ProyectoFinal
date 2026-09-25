@@ -1,0 +1,36 @@
+# Integración continua: revisa cada Pull Request y cada cambio en main.
+# Si algún paso falla, GitHub marca el PR con ❌ y no conviene fusionarlo.
+# El despliegue (CD) lo hace Vercel automáticamente al conectar el repositorio.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verificar:
+    name: Lint, pruebas y build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v5
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependencias (exactas del package-lock)
+        run: npm ci
+
+      - name: Revisar el código (sin avisos permitidos)
+        run: npm run lint:ci
+
+      - name: Pruebas automáticas
+        run: npm test
+
+      - name: Build de producción
+        run: npm run build
