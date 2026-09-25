@@ -52,7 +52,8 @@ El proyecto se basa en la opción **🛒 Catálogo Interactivo de Productos**, a
 - [React 19](https://react.dev/): interfaz basada en componentes
 - [Vite](https://vite.dev/): entorno de desarrollo y *build*
 - [React Router](https://reactrouter.com/): navegación entre páginas y rutas protegidas
-- Context API: sesión del usuario compartida en toda la app
+- Context API: sesión del usuario y avisos compartidos en toda la app
+- [Zod](https://zod.dev/): validación de formularios y de las respuestas de las APIs
 - CSS moderno: animaciones y transformaciones para el efecto elástico
 - [Vercel](https://vercel.com/): despliegue continuo a producción
 - Git y GitHub: control de versiones
@@ -81,6 +82,33 @@ La protección en React, la validación en el backend y las pruebas realizadas e
 
 ---
 
+## 🧯 Validaciones y manejo de errores
+
+- **Formularios validados con Zod:** login y "Agregar un post" en Curaduría, con mensajes claros bajo cada campo.
+- **Respuestas de las APIs validadas con Zod:** si un dato llega mal formado, se descarta o se informa en lugar de romper la app.
+- **Cliente HTTP central:** detecta si falta conexión, si se agotó el tiempo, el código de error del servidor o si los datos no son válidos, y lo traduce a un mensaje en español.
+- **Avisos al usuario:** mensajes en formularios, avisos emergentes, estados de error con botón **Reintentar** y un `ErrorBoundary` para errores inesperados.
+
+El detalle, los esquemas y las 17 pruebas realizadas están en **[docs/ERRORES.md](docs/ERRORES.md)**.
+
+---
+
+## ⚡ Optimización
+
+- **Filtros del tablero:** buscador, plataforma y etiquetas, optimizados con `useMemo`, `useCallback`, `React.memo` y `useDeferredValue`.
+- **Caché de noticias:** volver al tablero no repite las peticiones a las APIs.
+- **Carga diferida:** Login, Perfil y Curaduría se descargan solo al visitarlos (`React.lazy`).
+
+| Escenario (CPU 4× más lenta) | Antes | Después |
+|---|---|---|
+| Escribir en el buscador | 1,110 ms · 228 renders de tarjetas | **155 ms · 0** |
+| Activar y quitar una etiqueta | 1,097 ms · 150 renders | **185 ms · 0** |
+| Volver al tablero | 12 peticiones | **0** |
+
+El análisis completo y cómo se midió están en **[docs/OPTIMIZACION.md](docs/OPTIMIZACION.md)**.
+
+---
+
 ## 📁 Estructura del proyecto
 
 ```
@@ -90,7 +118,9 @@ DEVF_ProyectoFinal/
 │   ├── ACUERDOS.md           # Dinámica y acuerdos de trabajo
 │   ├── API.md                # Backend y comunicación con el frontend
 │   ├── BACKLOG.md            # Historias de usuario y plan de sprints
+│   ├── ERRORES.md            # Validaciones con Zod y manejo de errores
 │   ├── GIT.md                # Guía del flujo de Git del proyecto
+│   ├── OPTIMIZACION.md       # Análisis y mediciones de rendimiento
 │   └── RUTAS.md              # Rutas protegidas y seguridad
 ├── public/                   # Archivos estáticos (favicon, etc.)
 ├── scripts/
@@ -99,22 +129,34 @@ DEVF_ProyectoFinal/
 │   ├── assets/               # Imágenes e íconos de la marca
 │   ├── components/           # Componentes visuales reutilizables
 │   │   ├── Board.jsx         # Tablero que acomoda las noticias
+│   │   ├── CuratedPostForm.jsx # Formulario para agregar posts (Zod)
+│   │   ├── ErrorBoundary.jsx # Atrapa errores inesperados al renderizar
+│   │   ├── ErrorState.jsx    # Bloque de error con botón Reintentar
+│   │   ├── FormField.jsx     # Campo de formulario con mensaje de error
 │   │   ├── Header.jsx        # Logo, navegación y usuario conectado
 │   │   ├── Layout.jsx        # Estructura común de todas las páginas
-│   │   ├── NewsCard.jsx      # Tarjeta de una noticia
+│   │   ├── NewsCard.jsx      # Tarjeta de una noticia (memo)
+│   │   ├── NewsFilters.jsx   # Buscador y filtros del tablero (memo)
 │   │   ├── PlatformBadge.jsx # Etiqueta de la plataforma (YouTube, TikTok…)
-│   │   └── StatusMessage.jsx # Mensajes de carga y error
+│   │   ├── StatusMessage.jsx # Mensajes de carga
+│   │   └── Toaster.jsx       # Avisos emergentes
 │   ├── config/
 │   │   ├── auth.js           # Backend de autenticación, roles y cuentas de prueba
+│   │   ├── platforms.js      # Nombre e ícono de cada plataforma
 │   │   └── sources.js        # Lista de fuentes RSS y configuración de la API
 │   ├── context/
 │   │   ├── authContext.js    # Contexto de la sesión
-│   │   └── AuthProvider.jsx  # Maneja login, logout y restauración de sesión
+│   │   ├── AuthProvider.jsx  # Maneja login, logout y restauración de sesión
+│   │   ├── notificationContext.js # Contexto de los avisos
+│   │   └── NotificationProvider.jsx # Muestra avisos desde cualquier componente
 │   ├── data/
 │   │   └── news.json         # Posts curados de TikTok e Instagram
 │   ├── hooks/
 │   │   ├── useAuth.js        # Acceso a la sesión desde cualquier componente
-│   │   └── useNews.js        # Carga las noticias con estados de carga y error
+│   │   ├── useNews.js        # Carga las noticias con estados de carga, error y reintento
+│   │   ├── useNewsFilters.js # Filtros con useMemo, useCallback y useDeferredValue
+│   │   ├── useNotify.js      # Muestra un aviso emergente
+│   │   └── useZodForm.js     # Formularios validados con un esquema de Zod
 │   ├── pages/
 │   │   ├── Curation.jsx      # 🛡️ Panel de curaduría (admin y moderator)
 │   │   ├── Forbidden.jsx     # 403: sin permiso
@@ -124,14 +166,22 @@ DEVF_ProyectoFinal/
 │   │   └── Profile.jsx       # 🔒 Perfil del usuario
 │   ├── routes/
 │   │   └── ProtectedRoute.jsx # Protege rutas por sesión y por rol
+│   ├── schemas/              # Esquemas de Zod
+│   │   ├── auth.js           # Login, usuario, tokens y sesión
+│   │   ├── news.js           # Noticia y formulario de posts curados
+│   │   └── rss.js            # Respuestas de rss2json
 │   ├── services/             # Comunicación con el backend
 │   │   ├── authService.js    # Login, validación y renovación de tokens
+│   │   ├── curatedService.js # Lee y guarda los posts curados
+│   │   ├── httpClient.js     # Cliente HTTP: tiempo límite, errores y validación
 │   │   ├── rssClient.js      # Petición HTTP a rss2json
-│   │   └── newsService.js    # Une y normaliza las noticias de todas las fuentes
+│   │   └── newsService.js    # Une, normaliza y guarda en caché las noticias
 │   ├── styles/
 │   │   └── variables.css     # Colores, tipografías y medidas de la marca
 │   ├── utils/
+│   │   ├── errors.js         # AppError y mensajes de error para el usuario
 │   │   ├── html.js           # Limpia texto con HTML
+│   │   ├── profiler.js       # Mide renders con <Profiler> (solo en desarrollo)
 │   │   ├── session.js        # Guarda los tokens y lee su expiración
 │   │   └── tags.js           # Genera etiquetas a partir del texto
 │   ├── App.jsx               # Componente raíz y definición de rutas
@@ -154,9 +204,11 @@ components / pages   →  muestran la información
         ↓
 routes               →  deciden quién puede ver cada página
         ↓
-context / hooks      →  manejan estados: sesión, cargando, error, datos
+context / hooks      →  manejan estados: sesión, avisos, cargando, error, datos
         ↓
 services             →  hablan con el backend y normalizan los datos
+        ↓
+httpClient + schemas →  clasifican errores y validan cada respuesta con Zod
         ↓
 rss2json + JSON local + DummyJSON Auth
 ```
@@ -166,15 +218,17 @@ rss2json + JSON local + DummyJSON Auth
 ```
 App
 └── BrowserRouter
-    └── AuthProvider
-        └── Layout
-            ├── Header
-            └── (página según la ruta)
-                ├── Home  →  Board  →  NewsCard  →  PlatformBadge
-                ├── Login
-                ├── ProtectedRoute  →  Profile
-                ├── ProtectedRoute (roles)  →  Curation  |  Forbidden
-                └── NotFound
+    └── NotificationProvider   (+ Toaster)
+        └── AuthProvider
+            └── Layout
+                ├── Header
+                └── ErrorBoundary
+                    └── (página según la ruta)
+                        ├── Home  →  NewsFilters + Board  →  NewsCard  →  PlatformBadge
+                        ├── Login  →  FormField
+                        ├── ProtectedRoute  →  Profile
+                        ├── ProtectedRoute (roles)  →  Curation  →  CuratedPostForm  |  Forbidden
+                        └── NotFound
 ```
 
 ### Modelo de una noticia
@@ -236,6 +290,8 @@ El flujo de Git (ramas, commits y cómo actualizar el repositorio remoto) está 
 - [x] **Parte 2:** app creada con Vite, `.gitignore`, estructura de carpetas y primeros componentes
 - [x] **Parte 3:** backend definido (rss2json + JSON local), capa de servicios y noticias reales en el tablero
 - [x] **Parte 4:** rutas protegidas por sesión y por rol, con autenticación JWT validada en el backend
+- [x] **Parte 5:** validaciones con Zod y manejo de errores de formularios y peticiones al backend
+- [x] **Parte 6:** optimización con `useMemo`, `useCallback`, `memo`, `useDeferredValue`, `lazy` y caché, más filtros del tablero
 - [ ] Tablero disperso
 - [ ] Efecto *pop* elástico e interacciones de clic y doble clic
 - [ ] Vista de recomendaciones

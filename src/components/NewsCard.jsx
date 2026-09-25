@@ -1,12 +1,15 @@
+import { memo } from 'react'
 import PlatformBadge from './PlatformBadge'
 import './NewsCard.css'
 
-function NewsCard({ news }) {
+// memo: una tarjeta solo se vuelve a dibujar si cambia su noticia. Al filtrar, las
+// tarjetas que siguen visibles no se recalculan.
+const NewsCard = memo(function NewsCard({ news }) {
   const { title, source, platform, url, image, tags } = news
 
   return (
     <article className={`news-card news-card--${platform}`}>
-      {image && <img className="news-card__image" src={image} alt="" loading="lazy" />}
+      {image && <img className="news-card__image" src={image} alt="" loading="lazy" decoding="async" />}
       <div className="news-card__body">
         <div className="news-card__meta">
           <span className="news-card__source">{source}</span>
@@ -27,6 +30,6 @@ function NewsCard({ news }) {
       </div>
     </article>
   )
-}
+})
 
 export default NewsCard

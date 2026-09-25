@@ -1,0 +1,12 @@
+.curated-form {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  align-items: start;
+  max-width: 900px;
+  margin-bottom: 2rem;
+}
+
+.curated-form .form-alert,
+.curated-form .button {
+  grid-column: 1 / -1;
+  justify-self: start;
+}

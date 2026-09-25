@@ -1,8 +1,18 @@
-/* Acomodo tipo mosaico. Se reemplazará por el tablero disperso en el Sprint 2. */
+/* Acomodo tipo mosaico. Se reemplazará por el tablero disperso más adelante. */
 .board {
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 1rem;
   columns: 260px;
   column-gap: var(--gap);
+}
+
+/* Mientras el filtrado va un paso atrás de lo que se escribe (useDeferredValue) */
+.board--stale {
+  opacity: 0.6;
+  transition: opacity 150ms;
+}
+
+.board__item {
+  break-inside: avoid;
 }

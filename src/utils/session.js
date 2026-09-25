@@ -1,11 +1,19 @@
+import { SessionSchema } from '../schemas/auth'
+
 // Guarda los tokens en el navegador para no pedir login en cada visita.
 const STORAGE_KEY = 'mau.session'
 
+// Si lo guardado no tiene la forma esperada (alguien lo editó a mano), se descarta.
 export function loadSession() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    return raw ? JSON.parse(raw) : null
+    if (!raw) return null
+    const result = SessionSchema.safeParse(JSON.parse(raw))
+    if (result.success) return result.data
+    clearSession()
+    return null
   } catch {
+    clearSession()
     return null
   }
 }

@@ -1,6 +1,8 @@
 import { RSS2JSON_API_KEY, RSS2JSON_ENDPOINT } from '../config/sources'
+import { RssResponseSchema } from '../schemas/rss'
+import { requestJson } from './httpClient'
 
-// Pide un feed RSS a rss2json y devuelve sus noticias en crudo.
+// Pide un feed RSS a rss2json y devuelve sus noticias en crudo (sin validar una por una).
 export async function fetchFeed(feedUrl, { signal } = {}) {
   const params = new URLSearchParams({ rss_url: feedUrl })
   if (RSS2JSON_API_KEY) {
@@ -8,15 +10,9 @@ export async function fetchFeed(feedUrl, { signal } = {}) {
     params.set('count', '20')
   }
 
-  const response = await fetch(`${RSS2JSON_ENDPOINT}?${params}`, { signal })
-  if (!response.ok) {
-    throw new Error(`rss2json respondió ${response.status} para ${feedUrl}`)
-  }
-
-  const data = await response.json()
-  if (data.status !== 'ok') {
-    throw new Error(data.message ?? `No se pudo leer ${feedUrl}`)
-  }
-
+  const data = await requestJson(`${RSS2JSON_ENDPOINT}?${params}`, {
+    signal,
+    schema: RssResponseSchema,
+  })
   return data.items
 }

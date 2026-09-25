@@ -1,37 +1,32 @@
-import { useState } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router'
+import FormField from '../components/FormField'
+import StatusMessage from '../components/StatusMessage'
 import { DEMO_ACCOUNTS } from '../config/auth'
 import { useAuth } from '../hooks/useAuth'
+import { useNotify } from '../hooks/useNotify'
+import { useZodForm } from '../hooks/useZodForm'
+import { LoginFormSchema } from '../schemas/auth'
 import './Login.css'
 
 function Login() {
-  const { user, login } = useAuth()
+  const { user, checking, login } = useAuth()
+  const notify = useNotify()
   const navigate = useNavigate()
   const location = useLocation()
-  const [form, setForm] = useState({ username: '', password: '' })
-  const [error, setError] = useState(null)
-  const [submitting, setSubmitting] = useState(false)
+  const form = useZodForm(LoginFormSchema, { username: '', password: '' })
 
   // Después de entrar, regresa a la página protegida que se quería ver.
   const redirectTo = location.state?.from ?? '/perfil'
 
+  // Si hay una sesión guardada, se espera a verificarla antes de mostrar el formulario.
+  if (checking) return <StatusMessage>Verificando sesión…</StatusMessage>
   if (user) return <Navigate to={redirectTo} replace />
 
-  const handleChange = (event) => {
-    setForm({ ...form, [event.target.name]: event.target.value })
-  }
-
-  const handleSubmit = async (event) => {
-    event.preventDefault()
-    setError(null)
-    setSubmitting(true)
-    try {
-      await login(form.username.trim(), form.password)
-      navigate(redirectTo, { replace: true })
-    } catch (err) {
-      setError(err.message)
-      setSubmitting(false)
-    }
+  // Solo se llama si los datos pasaron la validación de Zod.
+  const onSubmit = async ({ username, password }) => {
+    const loggedUser = await login(username, password)
+    notify({ tone: 'success', message: `Hola, ${loggedUser.firstName}. Iniciaste sesión.` })
+    navigate(redirectTo, { replace: true })
   }
 
   return (
@@ -39,37 +34,23 @@ function Login() {
       <h1 className="page__title">Entrar</h1>
       <p className="page__lead">Inicia sesión para ver tu perfil y el panel de curaduría.</p>
 
-      <form className="login__form" onSubmit={handleSubmit}>
-        <label>
-          Usuario
-          <input
-            name="username"
-            value={form.username}
-            onChange={handleChange}
-            autoComplete="username"
-            required
-          />
-        </label>
-        <label>
-          Contraseña
-          <input
-            name="password"
-            type="password"
-            value={form.password}
-            onChange={handleChange}
-            autoComplete="current-password"
-            required
-          />
-        </label>
+      <form className="form" onSubmit={form.handleSubmit(onSubmit)} noValidate>
+        <FormField label="Usuario" autoComplete="username" {...form.field('username')} />
+        <FormField
+          label="Contraseña"
+          type="password"
+          autoComplete="current-password"
+          {...form.field('password')}
+        />
 
-        {error && (
-          <p className="login__error" role="alert">
-            {error}
+        {form.formError && (
+          <p className="form-alert" role="alert">
+            {form.formError}
           </p>
         )}
 
-        <button type="submit" className="button" disabled={submitting}>
-          {submitting ? 'Entrando…' : 'Entrar'}
+        <button type="submit" className="button" disabled={form.submitting}>
+          {form.submitting ? 'Entrando…' : 'Entrar'}
         </button>
       </form>
 
@@ -82,7 +63,7 @@ function Login() {
               key={account.username}
               type="button"
               className="button button--ghost"
-              onClick={() => setForm({ username: account.username, password: account.password })}
+              onClick={() => form.reset({ username: account.username, password: account.password })}
             >
               {account.role} · {account.username}
             </button>
