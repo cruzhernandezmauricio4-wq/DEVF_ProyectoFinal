@@ -8,7 +8,7 @@ function Profile() {
 
   return (
     <main className="page">
-      <section className="profile">
+      <section className="profile glass">
         <img className="profile__avatar" src={user.image} alt="" width="128" height="128" />
         <div>
           <h1 className="page__title">
@@ -30,7 +30,7 @@ function Profile() {
         </div>
       </dl>
 
-      <section className="profile__favorites">
+      <section className="profile__favorites glass">
         <h2>Mis favoritos</h2>
         <p>Aquí aparecerán las noticias que guardes. Disponible en un próximo sprint.</p>
       </section>

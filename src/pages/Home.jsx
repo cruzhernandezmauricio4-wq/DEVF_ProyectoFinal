@@ -24,7 +24,7 @@ function Home() {
   return (
     <main>
       {failedSources.length > 0 && (
-        <p className="notice" role="status">
+        <p className="notice glass" role="status">
           Algunas fuentes no respondieron ({failedSources.join(', ')}). Mostramos el resto.{' '}
           <button type="button" className="button button--ghost" onClick={retry}>
             Reintentar

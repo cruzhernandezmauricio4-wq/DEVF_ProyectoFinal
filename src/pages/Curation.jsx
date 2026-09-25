@@ -70,7 +70,7 @@ function Curation() {
         {!loading && !error && (
           <ul className="curation__members">
             {members.map((member) => (
-              <li key={member.username}>
+              <li key={member.username} className="glass">
                 <img src={member.image} alt="" width="48" height="48" loading="lazy" />
                 <div>
                   <strong>
@@ -96,7 +96,7 @@ function Curation() {
       <section className="curation__section">
         <h2>Posts curados</h2>
         <p className="curation__hint">Publicaciones agregadas por el equipo que se suman al tablero.</p>
-        <div className="curation__table-wrapper">
+        <div className="curation__table-wrapper glass">
           <table className="curation__table">
             <thead>
               <tr>

@@ -28,14 +28,13 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem;
-  border-radius: var(--radius);
-  background: var(--color-surface);
+  border-radius: var(--radius-sm);
 }
 
 .curation__members img {
   flex-shrink: 0;
   border-radius: 50%;
-  background: var(--color-bg);
+  background: var(--silver-200);
 }
 
 .curation__members div {
@@ -64,7 +63,7 @@
 .curation__table th,
 .curation__table td {
   padding: 0.75rem;
-  border-bottom: 1px solid #2a2a2a;
+  border-bottom: 1px solid rgb(28 29 33 / 0.08);
   text-align: left;
 }
 
@@ -83,4 +82,8 @@
 
 .curation__table td a {
   color: var(--color-text);
+}
+
+.curation__table-wrapper.glass {
+  border-radius: var(--radius-sm);
 }

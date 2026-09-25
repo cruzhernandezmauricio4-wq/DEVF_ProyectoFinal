@@ -16,7 +16,7 @@ function Header() {
         <p className="header__tagline">Moda for All and U</p>
       </div>
 
-      <nav className="header__nav" aria-label="Principal">
+      <nav className="header__nav glass" aria-label="Principal">
         <NavLink to="/" end>
           Tablero
         </NavLink>
