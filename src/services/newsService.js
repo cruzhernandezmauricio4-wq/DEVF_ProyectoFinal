@@ -42,6 +42,7 @@ export async function getNews({ signal } = {}) {
       ),
     ),
   )
+  signal?.throwIfAborted()
 
   const groups = results.filter((r) => r.status === 'fulfilled').map((r) => r.value)
   results
