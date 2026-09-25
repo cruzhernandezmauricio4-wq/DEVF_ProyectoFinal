@@ -93,6 +93,22 @@ El detalle, los esquemas y las 17 pruebas realizadas están en **[docs/ERRORES.m
 
 ---
 
+## ⚡ Optimización
+
+- **Filtros del tablero:** buscador, plataforma y etiquetas, optimizados con `useMemo`, `useCallback`, `React.memo` y `useDeferredValue`.
+- **Caché de noticias:** volver al tablero no repite las peticiones a las APIs.
+- **Carga diferida:** Login, Perfil y Curaduría se descargan solo al visitarlos (`React.lazy`).
+
+| Escenario (CPU 4× más lenta) | Antes | Después |
+|---|---|---|
+| Escribir en el buscador | 1,110 ms · 228 renders de tarjetas | **155 ms · 0** |
+| Activar y quitar una etiqueta | 1,097 ms · 150 renders | **185 ms · 0** |
+| Volver al tablero | 12 peticiones | **0** |
+
+El análisis completo y cómo se midió están en **[docs/OPTIMIZACION.md](docs/OPTIMIZACION.md)**.
+
+---
+
 ## 📁 Estructura del proyecto
 
 ```
@@ -104,6 +120,7 @@ DEVF_ProyectoFinal/
 │   ├── BACKLOG.md            # Historias de usuario y plan de sprints
 │   ├── ERRORES.md            # Validaciones con Zod y manejo de errores
 │   ├── GIT.md                # Guía del flujo de Git del proyecto
+│   ├── OPTIMIZACION.md       # Análisis y mediciones de rendimiento
 │   └── RUTAS.md              # Rutas protegidas y seguridad
 ├── public/                   # Archivos estáticos (favicon, etc.)
 ├── scripts/
@@ -118,12 +135,14 @@ DEVF_ProyectoFinal/
 │   │   ├── FormField.jsx     # Campo de formulario con mensaje de error
 │   │   ├── Header.jsx        # Logo, navegación y usuario conectado
 │   │   ├── Layout.jsx        # Estructura común de todas las páginas
-│   │   ├── NewsCard.jsx      # Tarjeta de una noticia
+│   │   ├── NewsCard.jsx      # Tarjeta de una noticia (memo)
+│   │   ├── NewsFilters.jsx   # Buscador y filtros del tablero (memo)
 │   │   ├── PlatformBadge.jsx # Etiqueta de la plataforma (YouTube, TikTok…)
 │   │   ├── StatusMessage.jsx # Mensajes de carga
 │   │   └── Toaster.jsx       # Avisos emergentes
 │   ├── config/
 │   │   ├── auth.js           # Backend de autenticación, roles y cuentas de prueba
+│   │   ├── platforms.js      # Nombre e ícono de cada plataforma
 │   │   └── sources.js        # Lista de fuentes RSS y configuración de la API
 │   ├── context/
 │   │   ├── authContext.js    # Contexto de la sesión
@@ -135,6 +154,7 @@ DEVF_ProyectoFinal/
 │   ├── hooks/
 │   │   ├── useAuth.js        # Acceso a la sesión desde cualquier componente
 │   │   ├── useNews.js        # Carga las noticias con estados de carga, error y reintento
+│   │   ├── useNewsFilters.js # Filtros con useMemo, useCallback y useDeferredValue
 │   │   ├── useNotify.js      # Muestra un aviso emergente
 │   │   └── useZodForm.js     # Formularios validados con un esquema de Zod
 │   ├── pages/
@@ -155,12 +175,13 @@ DEVF_ProyectoFinal/
 │   │   ├── curatedService.js # Lee y guarda los posts curados
 │   │   ├── httpClient.js     # Cliente HTTP: tiempo límite, errores y validación
 │   │   ├── rssClient.js      # Petición HTTP a rss2json
-│   │   └── newsService.js    # Une y normaliza las noticias de todas las fuentes
+│   │   └── newsService.js    # Une, normaliza y guarda en caché las noticias
 │   ├── styles/
 │   │   └── variables.css     # Colores, tipografías y medidas de la marca
 │   ├── utils/
 │   │   ├── errors.js         # AppError y mensajes de error para el usuario
 │   │   ├── html.js           # Limpia texto con HTML
+│   │   ├── profiler.js       # Mide renders con <Profiler> (solo en desarrollo)
 │   │   ├── session.js        # Guarda los tokens y lee su expiración
 │   │   └── tags.js           # Genera etiquetas a partir del texto
 │   ├── App.jsx               # Componente raíz y definición de rutas
@@ -203,7 +224,7 @@ App
                 ├── Header
                 └── ErrorBoundary
                     └── (página según la ruta)
-                        ├── Home  →  Board  →  NewsCard  →  PlatformBadge
+                        ├── Home  →  NewsFilters + Board  →  NewsCard  →  PlatformBadge
                         ├── Login  →  FormField
                         ├── ProtectedRoute  →  Profile
                         ├── ProtectedRoute (roles)  →  Curation  →  CuratedPostForm  |  Forbidden
@@ -270,6 +291,7 @@ El flujo de Git (ramas, commits y cómo actualizar el repositorio remoto) está 
 - [x] **Parte 3:** backend definido (rss2json + JSON local), capa de servicios y noticias reales en el tablero
 - [x] **Parte 4:** rutas protegidas por sesión y por rol, con autenticación JWT validada en el backend
 - [x] **Parte 5:** validaciones con Zod y manejo de errores de formularios y peticiones al backend
+- [x] **Parte 6:** optimización con `useMemo`, `useCallback`, `memo`, `useDeferredValue`, `lazy` y caché, más filtros del tablero
 - [ ] Tablero disperso
 - [ ] Efecto *pop* elástico e interacciones de clic y doble clic
 - [ ] Vista de recomendaciones
