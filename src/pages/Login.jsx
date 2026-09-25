@@ -1,5 +1,6 @@
 import { Navigate, useLocation, useNavigate } from 'react-router'
 import FormField from '../components/FormField'
+import StatusMessage from '../components/StatusMessage'
 import { DEMO_ACCOUNTS } from '../config/auth'
 import { useAuth } from '../hooks/useAuth'
 import { useNotify } from '../hooks/useNotify'
@@ -8,7 +9,7 @@ import { LoginFormSchema } from '../schemas/auth'
 import './Login.css'
 
 function Login() {
-  const { user, login } = useAuth()
+  const { user, checking, login } = useAuth()
   const notify = useNotify()
   const navigate = useNavigate()
   const location = useLocation()
@@ -17,6 +18,8 @@ function Login() {
   // Después de entrar, regresa a la página protegida que se quería ver.
   const redirectTo = location.state?.from ?? '/perfil'
 
+  // Si hay una sesión guardada, se espera a verificarla antes de mostrar el formulario.
+  if (checking) return <StatusMessage>Verificando sesión…</StatusMessage>
   if (user) return <Navigate to={redirectTo} replace />
 
   // Solo se llama si los datos pasaron la validación de Zod.

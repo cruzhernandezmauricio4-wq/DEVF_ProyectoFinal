@@ -1,14 +1,18 @@
+import { lazy } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router'
 import Layout from './components/Layout'
 import { CURATOR_ROLES } from './config/auth'
 import AuthProvider from './context/AuthProvider'
 import NotificationProvider from './context/NotificationProvider'
-import Curation from './pages/Curation'
 import Home from './pages/Home'
-import Login from './pages/Login'
-import NotFound from './pages/NotFound'
-import Profile from './pages/Profile'
 import ProtectedRoute from './routes/ProtectedRoute'
+
+// React.lazy: estas páginas se descargan solo cuando alguien las visita.
+// Quien solo ve el tablero no descarga el código del login, perfil ni curaduría.
+const Login = lazy(() => import('./pages/Login'))
+const Profile = lazy(() => import('./pages/Profile'))
+const Curation = lazy(() => import('./pages/Curation'))
+const NotFound = lazy(() => import('./pages/NotFound'))
 
 function App() {
   return (
