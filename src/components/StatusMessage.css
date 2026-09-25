@@ -1,0 +1,13 @@
+.status-message {
+  max-width: var(--max-width);
+  margin: 4rem auto;
+  padding: 0 1rem;
+  color: var(--color-muted);
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.status-message--error {
+  color: #ff6b6b;
+}

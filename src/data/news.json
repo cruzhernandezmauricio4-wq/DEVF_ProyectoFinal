@@ -1,56 +1,24 @@
 [
   {
-    "id": 1,
-    "title": "Rick Owens y la estética de lo oscuro",
-    "source": "podcast",
-    "platform": "youtube",
-    "url": "https://www.youtube.com/",
-    "image": "https://picsum.photos/seed/mau1/600/800",
-    "tags": ["rick-owens", "vanguardia", "entrevista"]
-  },
-  {
-    "id": 2,
-    "title": "El indicador de recesión que se ve en la moda",
-    "source": "revista",
-    "platform": "web",
-    "url": "https://example.com/",
-    "image": "https://picsum.photos/seed/mau2/600/400",
-    "tags": ["tendencias", "economia"]
-  },
-  {
-    "id": 3,
+    "id": "local-1",
     "title": "Streetwear japonés: capas y siluetas oversize",
-    "source": "video corto",
+    "excerpt": "Post curado por MAU. Reemplazar por un TikTok real.",
+    "source": "MAU",
     "platform": "tiktok",
     "url": "https://www.tiktok.com/",
     "image": "https://picsum.photos/seed/mau3/600/900",
-    "tags": ["streetwear", "japon", "tendencias"]
+    "date": "2026-09-20",
+    "tags": ["streetwear", "japon"]
   },
   {
-    "id": 4,
+    "id": "local-2",
     "title": "Marine Serre y la moda reciclada",
-    "source": "post",
+    "excerpt": "Post curado por MAU. Reemplazar por un post de Instagram real.",
+    "source": "MAU",
     "platform": "instagram",
     "url": "https://www.instagram.com/",
     "image": "https://picsum.photos/seed/mau4/600/600",
-    "tags": ["marine-serre", "sustentable", "vanguardia"]
-  },
-  {
-    "id": 5,
-    "title": "Cómo hacer un ojal a mano",
-    "source": "tutorial",
-    "platform": "youtube",
-    "url": "https://www.youtube.com/",
-    "image": "https://picsum.photos/seed/mau5/600/450",
-    "tags": ["tutorial", "costura"]
-  },
-  {
-    "id": 6,
-    "title": "Y-3 y la unión entre deporte y lujo",
-    "source": "revista",
-    "platform": "web",
-    "url": "https://example.com/",
-    "image": "https://picsum.photos/seed/mau6/600/750",
-    "tags": ["y-3", "streetwear", "lujo"]
+    "date": "2026-09-18",
+    "tags": ["vanguardia", "sustentable"]
   }
 ]

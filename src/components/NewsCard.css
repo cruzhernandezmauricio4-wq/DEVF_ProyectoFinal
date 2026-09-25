@@ -11,8 +11,27 @@
   object-fit: cover;
 }
 
+/* Las miniaturas de YouTube vienen en 4:3 con barras negras; se recortan a 16:9. */
+.news-card--youtube .news-card__image {
+  aspect-ratio: 16 / 9;
+}
+
 .news-card__body {
   padding: 1rem;
+}
+
+.news-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.news-card__source {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
 .news-card__title {
