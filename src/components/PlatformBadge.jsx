@@ -25,11 +25,11 @@ function PlatformBadge({ platform }) {
   const { label } = PLATFORM_LABELS[key]
 
   return (
-    <span className={`platform-badge platform-badge--${key}`}>
+    <span className={`platform-badge platform-badge--${key}`} title={label}>
       <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true">
         {ICONS[key]}
       </svg>
-      {label}
+      <span className="platform-badge__label">{label}</span>
     </span>
   )
 }

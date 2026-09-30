@@ -1,55 +1,148 @@
 .filters {
   display: grid;
-  gap: 0.75rem;
+  gap: var(--space-3);
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 0 1rem 0.5rem;
+  padding: 0 var(--gutter) var(--space-2);
 }
 
+.filters__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+}
+
+/* Buscador: píldora de vidrio líquido de 48 px (como el de Pinterest) */
 .filters__search {
-  width: 100%;
+  display: flex;
+  flex: 1 1 20rem;
+  align-items: center;
+  gap: var(--space-2);
   max-width: 560px;
-  padding: 0.85rem 1.25rem 0.85rem 2.75rem;
-  border: 1px solid var(--glass-border);
-  border-radius: 999px;
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23595d65' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E")
-      no-repeat 1rem center / 18px,
-    var(--glass-bg-strong);
-  -webkit-backdrop-filter: var(--glass-blur);
-  backdrop-filter: var(--glass-blur);
-  box-shadow: var(--glass-edge), var(--glass-shadow);
+  min-height: 3rem;
+  padding: 0 var(--space-2) 0 var(--space-4);
+  border-radius: var(--radius-pill);
+  color: var(--color-muted);
+  cursor: text;
+  transition: box-shadow 0.2s;
+}
+
+.filters__search svg {
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.filters__search input {
+  flex: 1;
+  min-width: 0;
+  height: 3rem;
+  border: 0;
+  outline: none;
+  background: none;
+  color: var(--color-text);
+  font-size: 1rem; /* 16 px o más: el celular no hace zoom al escribir */
+}
+
+.filters__search input::placeholder {
+  color: var(--color-muted);
+}
+
+.filters__search:focus-within {
+  box-shadow:
+    var(--glass-specular),
+    0 0 0 3px rgb(var(--shadow-rgb) / 0.18),
+    var(--glass-shadow);
+}
+
+.filters__summary {
+  margin: 0;
+}
+
+/* Tiras que se deslizan de lado cuando no caben (celular) */
+.filters__strip {
+  display: flex;
+  gap: var(--space-2);
+  margin-inline: calc(-1 * var(--gutter));
+  padding: 4px var(--gutter);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+/* Las etiquetas se desvanecen en las orillas. Solo aquí: una máscara impide que el
+   vidrio que va adentro (el control segmentado) vea el fondo de la página. */
+.filters__strip--tags {
+  -webkit-mask: linear-gradient(90deg, transparent, #000 var(--gutter), #000 calc(100% - var(--gutter)), transparent);
+  mask: linear-gradient(90deg, transparent, #000 var(--gutter), #000 calc(100% - var(--gutter)), transparent);
+}
+
+.filters__strip::-webkit-scrollbar {
+  display: none;
+}
+
+/* ─── Control segmentado de plataforma ─── */
+.segmented {
+  display: inline-flex;
+  flex-shrink: 0;
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--radius-pill);
+}
+
+.segmented__option {
+  min-height: 2.25rem;
+  padding: 0.35rem 1rem;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--color-muted);
+  font-size: var(--text-small);
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 0.25s,
+    color 0.2s,
+    transform 0.35s var(--ease-liquid);
+}
+
+.segmented__option:hover {
   color: var(--color-text);
 }
 
-.filters__search::placeholder {
-  color: var(--color-muted);
+.segmented__option:active {
+  transform: scale(0.95);
 }
 
-.filters__search:focus {
-  outline: none;
-  box-shadow: var(--glass-edge), 0 0 0 3px rgb(28 29 33 / 0.15), var(--glass-shadow);
+.segmented__option[aria-pressed='true'] {
+  background: var(--button-metal);
+  color: var(--color-on-accent);
+  font-weight: 600;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25), 0 3px 8px rgb(var(--shadow-rgb) / 0.2);
 }
 
-.filters__group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-
+/* ─── Etiquetas ─── */
 .chip {
-  padding: 0.4rem 0.9rem;
+  flex-shrink: 0;
+  min-height: 2.25rem;
+  padding: 0.35rem 0.9rem;
   border: 1px solid var(--glass-border);
-  border-radius: 999px;
-  background: rgb(255 255 255 / 0.45);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.9);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  box-shadow: var(--glass-specular);
   color: var(--color-muted);
-  font-size: 0.8rem;
+  font-size: var(--text-small);
   font-weight: 500;
+  white-space: nowrap;
   cursor: pointer;
-  transition: transform 0.35s var(--ease-elastic), background 0.2s, color 0.2s;
+  transition:
+    transform 0.35s var(--ease-elastic),
+    background 0.2s,
+    color 0.2s;
 }
 
 .chip:hover {
@@ -57,27 +150,37 @@
   transform: scale(1.06);
 }
 
+.chip:active {
+  transform: scale(0.95);
+}
+
 .chip[aria-pressed='true'] {
   border-color: transparent;
   background: var(--button-metal);
   color: var(--color-on-accent);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25), 0 4px 10px rgb(28 29 33 / 0.2);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25), 0 4px 10px rgb(var(--shadow-rgb) / 0.2);
 }
 
 .chip__count {
   opacity: 0.55;
 }
 
-.filters__summary {
-  margin: 0;
-  color: var(--color-muted);
-  font-size: 0.8rem;
+/* En pantallas anchas las etiquetas caben en renglones; no hace falta deslizar. */
+@media (min-width: 1024px) {
+  .filters__strip--tags {
+    flex-wrap: wrap;
+    margin-inline: 0;
+    padding-inline: 0;
+    overflow: visible;
+    -webkit-mask: none;
+    mask: none;
+  }
 }
 
 .board__empty {
   max-width: var(--max-width);
-  margin: 2rem auto;
-  padding: 0 1rem;
+  margin: var(--space-6) auto;
+  padding: 0 var(--gutter);
   color: var(--color-muted);
   font-family: var(--font-display);
   font-size: 1.5rem;

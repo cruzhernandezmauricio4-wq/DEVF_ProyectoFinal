@@ -1,16 +1,54 @@
-/* Mosaico tipo moodboard: columnas de alturas libres, como recortes en una pared. */
+/* Mosaico tipo moodboard: columnas de alturas libres, como recortes en una pared.
+   Como en Pinterest, el número de columnas cambia con el ancho y la foto conserva
+   su proporción: 2 en el celular, 3–4 en tableta y hasta 6 en pantallas anchas. */
 .board {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 1rem;
-  columns: 280px;
-  column-gap: var(--gap);
+  padding: var(--space-4) var(--gutter);
+  columns: 2;
+  column-gap: 0.625rem;
 }
 
 .board__item {
   position: relative;
   break-inside: avoid;
   padding-top: 2px; /* evita que la sombra se corte entre columnas */
+}
+
+@media (min-width: 640px) {
+  .board {
+    columns: 220px;
+    column-gap: var(--gap);
+  }
+}
+
+@media (min-width: 1024px) {
+  .board {
+    columns: 250px;
+  }
+
+  /* Tablero disperso: cada recorte queda apenas girado, como pegado a mano en la
+     pared. Al pasar el mouse se endereza. Solo en pantallas grandes, donde hay aire. */
+  .board__item:nth-child(5n + 1) .news-card {
+    rotate: -0.7deg;
+  }
+
+  .board__item:nth-child(5n + 2) .news-card {
+    rotate: 0.5deg;
+  }
+
+  .board__item:nth-child(5n + 4) .news-card {
+    rotate: -0.35deg;
+  }
+
+  .board__item:nth-child(5n) .news-card {
+    rotate: 0.8deg;
+  }
+
+  .board__item .news-card:hover,
+  .board__item .news-card:focus-within {
+    rotate: 0deg;
+  }
 }
 
 /* La tarjeta con pop queda encima de sus vecinas */

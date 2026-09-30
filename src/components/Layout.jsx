@@ -1,7 +1,9 @@
 import { Suspense } from 'react'
 import { Outlet, useLocation } from 'react-router'
 import ErrorBoundary from './ErrorBoundary'
+import Footer from './Footer'
 import Header from './Header'
+import LiquidGlassFilter from './LiquidGlassFilter'
 import StatusMessage from './StatusMessage'
 
 function Layout() {
@@ -9,6 +11,7 @@ function Layout() {
 
   return (
     <>
+      <LiquidGlassFilter />
       <Header />
       {/* La `key` reinicia el ErrorBoundary al cambiar de página. */}
       <ErrorBoundary key={pathname}>
@@ -17,6 +20,7 @@ function Layout() {
           <Outlet />
         </Suspense>
       </ErrorBoundary>
+      <Footer />
     </>
   )
 }

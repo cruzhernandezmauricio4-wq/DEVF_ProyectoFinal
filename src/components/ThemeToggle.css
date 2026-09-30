@@ -1,0 +1,21 @@
+/* Usa la forma de .nav-item (Header.css); aquí solo el giro del ícono. */
+.theme-toggle .nav-icon {
+  transition: transform 0.5s var(--ease-liquid);
+}
+
+.theme-toggle:hover .nav-icon {
+  transform: rotate(-25deg) scale(1.1);
+}
+
+/* En la computadora es un botón redondo solo con ícono; en el celular lleva texto
+   debajo, como las demás pestañas. */
+@media (min-width: 720px) {
+  .theme-toggle {
+    width: 2.5rem;
+    padding: 0;
+  }
+
+  .theme-toggle__label {
+    display: none;
+  }
+}

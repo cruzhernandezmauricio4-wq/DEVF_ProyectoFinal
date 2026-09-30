@@ -16,6 +16,7 @@ body {
   background: var(--color-bg);
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Fondo plateado con reflejos perlados. Va en una capa fija para que el vidrio
@@ -25,12 +26,7 @@ body::before {
   position: fixed;
   inset: 0;
   z-index: -1;
-  background:
-    radial-gradient(55vw 45vh at 8% 2%, rgb(210 222 255 / 0.95), transparent 62%),
-    radial-gradient(45vw 40vh at 96% 12%, rgb(255 226 238 / 0.75), transparent 60%),
-    radial-gradient(55vw 55vh at 72% 100%, rgb(214 250 238 / 0.7), transparent 62%),
-    radial-gradient(40vw 35vh at 20% 85%, rgb(255 244 222 / 0.7), transparent 60%),
-    linear-gradient(160deg, #f5f6f9 0%, #dadde3 42%, #eef0f3 58%, #cdd1d8 100%);
+  background: var(--backdrop);
 }
 
 a {
@@ -49,54 +45,123 @@ select {
 }
 
 :focus-visible {
-  outline: 2px solid var(--graphite);
+  outline: 2px solid var(--color-text);
   outline-offset: 3px;
 }
 
-/* Superficie de vidrio líquido reutilizable */
+/* ─── Vidrio líquido ───
+   Tres capas, como en las recreaciones web de Liquid Glass (awesome-liquid-glass):
+   1. El elemento: tinte translúcido y brillo especular (sombras interiores).
+   2. ::before: desenfoca y satura lo que hay detrás. Con .glass--liquid, además, lo
+      refracta con el filtro SVG #mau-liquid (LiquidGlassFilter.jsx).
+   3. ::after: borde de luz que se desvanece en diagonal, como el canto de un cristal.
+   El desenfoque va en ::before y no en el elemento para que la refracción se pueda
+   aplicar sin deformar el texto. */
 .glass {
+  position: relative;
+  z-index: 0;
   background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-specular), var(--glass-shadow);
+}
+
+.glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
   -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-edge), var(--glass-shadow);
+  pointer-events: none;
+}
+
+.glass::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  padding: 1px;
+  border-radius: inherit;
+  background: var(--glass-rim);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.glass--strong {
+  background: var(--glass-bg-strong);
+}
+
+/* Refracción: solo en navegadores que la dibujan bien (ver public/theme-init.js).
+   Con 20 px de desenfoque la deformación no se alcanza a ver; el vidrio líquido usa
+   poco desenfoque para que el fondo se vea doblado, no solo borroso. */
+.liquid-refraction .glass--liquid {
+  background: var(--liquid-tint);
+}
+
+.liquid-refraction .glass--liquid::before {
+  -webkit-backdrop-filter: var(--liquid-blur);
+  backdrop-filter: var(--liquid-blur);
+  filter: url(#mau-liquid);
+}
+
+/* El <svg> del filtro no debe ocupar espacio en la página */
+.liquid-glass-filter {
+  position: absolute;
+  pointer-events: none;
 }
 
 /* Contenedor de las páginas internas (login, perfil, curaduría, noticia) */
 .page {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 1.5rem 1rem 4rem;
+  padding: var(--space-5) var(--gutter) var(--space-8);
 }
 
 .page__title {
-  margin: 0 0 0.5rem;
+  margin: 0 0 var(--space-2);
   font-family: var(--font-display);
   font-size: clamp(2.5rem, 6vw, 4.5rem);
   font-weight: 400;
   line-height: 1;
-  letter-spacing: -0.01em;
+  letter-spacing: var(--tracking-display);
 }
 
 .page__lead {
-  margin: 0 0 2rem;
+  margin: 0 0 var(--space-6);
   color: var(--color-muted);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
 }
 
+/* Etiqueta pequeña en mayúsculas para fuentes, fechas y secciones (como Wired) */
+.eyebrow {
+  color: var(--color-muted);
+  font-size: var(--text-eyebrow);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-eyebrow);
+}
+
+/* Botones: píldora metálica; al presionar se encoge a 0.95 (como Apple) */
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  padding: 0.7rem 1.35rem;
+  min-height: var(--tap);
+  padding: 0.65rem 1.35rem;
   border: 1px solid rgb(255 255 255 / 0.15);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--button-metal);
   color: var(--color-on-accent);
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25), 0 6px 16px rgb(28 29 33 / 0.22);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25), 0 6px 16px rgb(var(--shadow-rgb) / 0.22);
   transition: transform 0.35s var(--ease-elastic), box-shadow 0.2s;
 }
 
@@ -105,7 +170,8 @@ select {
 }
 
 .button:active {
-  transform: scale(0.97);
+  transform: scale(0.95);
+  transition-duration: 0.1s;
 }
 
 .button:disabled {
@@ -120,15 +186,21 @@ select {
   backdrop-filter: var(--glass-blur);
   border-color: var(--glass-border);
   color: var(--color-text);
-  box-shadow: var(--glass-edge), 0 4px 12px rgb(28 29 33 / 0.08);
+  box-shadow: var(--glass-specular), 0 4px 12px rgb(var(--shadow-rgb) / 0.08);
+}
+
+.button--small {
+  min-height: 2.25rem;
+  padding: 0.4rem 1rem;
+  font-size: var(--text-small);
 }
 
 .role-badge {
   display: inline-block;
   padding: 0.2rem 0.65rem;
-  border: 1px solid var(--silver-300);
-  border-radius: 999px;
-  background: rgb(255 255 255 / 0.6);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
   color: var(--color-muted);
   font-size: 0.7rem;
   font-weight: 600;
@@ -152,23 +224,57 @@ select {
 .form-alert {
   margin: 0;
   padding: 0.75rem 1rem;
-  border: 1px solid rgb(179 38 30 / 0.35);
+  border: 1px solid var(--alert-border);
   border-radius: var(--radius-sm);
-  background: rgb(255 235 233 / 0.75);
+  background: var(--alert-bg);
   color: var(--color-error);
 }
 
+/* Aviso de fuentes que no respondieron */
 .notice {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.75rem;
-  max-width: calc(var(--max-width) - 2rem);
-  margin: 0 auto 1rem;
-  padding: 0.75rem 1rem;
+  gap: var(--space-2) var(--space-3);
+  max-width: calc(var(--max-width) - 2 * var(--gutter));
+  margin: 0 var(--gutter) var(--space-4);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
   border-radius: var(--radius-sm);
   color: var(--color-muted);
-  font-size: 0.9rem;
+  font-size: var(--text-small);
+  line-height: 1.4;
+}
+
+.notice p {
+  flex: 1 1 16rem;
+  margin: 0;
+}
+
+@media (min-width: 1728px) {
+  .notice {
+    margin-inline: auto;
+  }
+}
+
+/* En el celular la navegación es una barra flotante abajo; se deja espacio para ella. */
+@media (max-width: 719px) {
+  body {
+    padding-bottom: calc(var(--nav-height) + 2rem + env(safe-area-inset-bottom));
+  }
+}
+
+/* Accesibilidad: quien pide menos transparencia ve superficies sólidas. */
+@media (prefers-reduced-transparency: reduce) {
+  :root,
+  :root[data-theme='dark'] {
+    --glass-bg: var(--surface-solid);
+    --glass-bg-strong: var(--surface-solid);
+    --glass-blur: none;
+  }
+
+  .glass::before {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
