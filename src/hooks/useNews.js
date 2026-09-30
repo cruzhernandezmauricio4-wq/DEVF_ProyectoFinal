@@ -1,40 +1,68 @@
-import { useCallback, useEffect, useState } from 'react'
-import { getNews } from '../services/newsService'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { clearNewsCache, getCachedPageCount, getNewsPage, TOTAL_PAGES } from '../services/newsService'
 
-// Carga las noticias y expone los estados de carga y error, más `retry` para reintentar.
+// Carga las noticias por tandas para el scroll infinito.
+// - `loadMore` pide la siguiente tanda (se llama al acercarse al final del tablero).
+// - `retry` reintenta la tanda que falló; `reload` vuelve a pedir todo desde cero.
 export function useNews() {
-  const [news, setNews] = useState([])
-  const [failedSources, setFailedSources] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [pages, setPages] = useState([])
+  // Al volver al tablero se piden de nuevo (desde la caché) todas las tandas ya vistas.
+  const [requested, setRequested] = useState(() => Math.max(1, getCachedPageCount()))
   const [error, setError] = useState(null)
-  const [attempt, setAttempt] = useState(0)
+  const [forcedPage, setForcedPage] = useState(null)
+
+  const nextIndex = pages.length
+  const pending = nextIndex < requested && !error
 
   useEffect(() => {
+    if (!pending) return
     const controller = new AbortController()
 
-    // Al reintentar se ignora la caché para volver a pedir las noticias.
-    getNews({ signal: controller.signal, force: attempt > 0 })
-      .then((result) => {
+    getNewsPage(nextIndex, { signal: controller.signal, force: forcedPage === nextIndex })
+      .then((page) => {
         if (controller.signal.aborted) return
-        setNews(result.news)
-        setFailedSources(result.failedSources)
+        setPages((current) => (current.length === nextIndex ? [...current, page] : current))
       })
       .catch((err) => {
         // Una carga cancelada (al desmontar o por StrictMode en desarrollo) no es un error real.
         if (!controller.signal.aborted) setError(err)
       })
-      .finally(() => {
-        if (!controller.signal.aborted) setLoading(false)
-      })
 
     return () => controller.abort()
-  }, [attempt])
+  }, [pending, nextIndex, forcedPage])
+
+  // useMemo: la lista completa solo se arma de nuevo cuando llega una tanda.
+  const news = useMemo(() => pages.flatMap((page) => page.news), [pages])
+  const failedSources = useMemo(() => pages.flatMap((page) => page.failedSources), [pages])
+
+  const hasMore = pages.length < TOTAL_PAGES
+
+  const loadMore = useCallback(() => {
+    setRequested((current) => Math.min(TOTAL_PAGES, Math.max(current, pages.length + 1)))
+  }, [pages.length])
 
   const retry = useCallback(() => {
-    setLoading(true)
+    setForcedPage(pages.length)
     setError(null)
-    setAttempt((n) => n + 1)
+  }, [pages.length])
+
+  const reload = useCallback(() => {
+    clearNewsCache()
+    setPages([])
+    setRequested(1)
+    setForcedPage(null)
+    setError(null)
   }, [])
 
-  return { news, failedSources, loading, error, retry }
+  return {
+    news,
+    failedSources,
+    loading: pending && pages.length === 0,
+    loadingMore: pending && pages.length > 0,
+    error,
+    hasMore,
+    loadMore,
+    retry,
+    reload,
+  }
 }

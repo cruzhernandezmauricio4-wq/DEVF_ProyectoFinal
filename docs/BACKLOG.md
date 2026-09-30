@@ -10,7 +10,7 @@ Historias de usuario del proyecto **MAU**, ordenadas por prioridad.
 
 | ID | Historia | Prioridad | Sprint |
 |---|---|---|---|
-| HU-01 | Como visitante, quiero ver las noticias de moda en un tablero disperso para explorarlas como un moodboard. | 🔴 | 2 |
+| HU-01 | Como visitante, quiero ver las noticias de moda en un tablero disperso para explorarlas como un moodboard. | 🔴 | 2 · disperso en 10 ✅ |
 | HU-02 | Como visitante, quiero identificar el tipo de fuente (revista, YouTube, TikTok, Instagram) en cada tarjeta. | 🔴 | 2 |
 | HU-11 | Como visitante, quiero ver noticias reales y actuales de revistas y canales de moda. | 🔴 | 3 |
 | HU-12 | Como usuario, quiero iniciar sesión para ver mi perfil. | 🔴 | 4 |
@@ -20,12 +20,14 @@ Historias de usuario del proyecto **MAU**, ordenadas por prioridad.
 | HU-16 | Como visitante, quiero que buscar y filtrar se sienta instantáneo, incluso en el celular. | 🔴 | 6 |
 | HU-17 | Como visitante, quiero entrar a MAU desde una URL pública para verlo sin instalar nada. | 🔴 | 7 |
 | HU-18 | Como equipo, queremos que cada cambio se revise automáticamente antes de publicarse. | 🟡 | 7 |
-| HU-03 | Como visitante, quiero que la tarjeta haga un efecto *pop* elástico al pasar el mouse para sentir que el tablero está vivo. | 🔴 | 8 |
-| HU-04 | Como visitante, quiero que un doble clic me lleve directo a la noticia original. | 🔴 | 8 |
-| HU-05 | Como visitante, quiero que un clic me muestre noticias similares para seguir descubriendo contenido. | 🔴 | 9 |
+| HU-03 | Como visitante, quiero que la tarjeta haga un efecto *pop* elástico al pasar el mouse para sentir que el tablero está vivo. | 🔴 | 8 ✅ |
+| HU-04 | Como visitante, quiero que un doble clic me lleve directo a la noticia original. | 🔴 | 8 ✅ |
+| HU-05 | Como visitante, quiero que un clic me muestre noticias similares para seguir descubriendo contenido. | 🔴 | 8 ✅ |
+| HU-19 | Como visitante, quiero seguir viendo más noticias al bajar, sin esperar a que cargue todo al inicio. | 🔴 | 9 ✅ |
+| HU-20 | Como visitante, quiero un modo oscuro para leer de noche. | 🟡 | 9 ✅ |
 | HU-06 | Como visitante, quiero filtrar el tablero por etiqueta (diseñador, tendencia, tema). | 🟡 | 6 ✅ |
-| HU-07 | Como visitante, quiero que el sitio se vea bien en el celular. | 🟡 | 10 |
-| HU-08 | Como visitante, quiero una identidad visual editorial y moderna (rebranding). | 🟡 | 10 |
+| HU-07 | Como visitante, quiero que el sitio se vea bien en el celular. | 🟡 | 10 ✅ |
+| HU-08 | Como visitante, quiero una identidad visual editorial y moderna (rebranding). | 🟡 | 8 ✅ |
 | HU-09 | Como visitante, quiero ver una vista previa del video o post incrustado. | 🟢 | Extra |
 | HU-10 | Como visitante, quiero guardar mis noticias favoritas. | 🟢 | Extra |
 
@@ -60,7 +62,7 @@ Historias de usuario del proyecto **MAU**, ordenadas por prioridad.
 - [x] Solicitud de muestra con `npm run api:check`
 - [x] Documentar la comunicación en `docs/API.md`
 - [ ] Llenar `news.json` con posts reales de TikTok e Instagram
-- [ ] Cambiar el mosaico por un acomodo disperso
+- [x] Cambiar el mosaico por un acomodo disperso → hecho en el Sprint 10
 - [x] Primer despliegue en Vercel → movido al Sprint 7
 
 ### Sprint 4: Rutas protegidas ✅
@@ -101,7 +103,7 @@ Historias de usuario del proyecto **MAU**, ordenadas por prioridad.
 
 ### Sprint 7: Despliegue y CI/CD
 - [x] `vercel.json`: build, rutas de React, caché de archivos y encabezados de seguridad
-- [x] Pruebas automáticas con Vitest (37 pruebas)
+- [x] Pruebas automáticas con Vitest (37 pruebas; 41 desde el Sprint 8)
 - [x] CI con GitHub Actions: linter sin avisos, pruebas y build en cada PR
 - [x] Verificar el build de producción con las reglas de Vercel en local
 - [x] Corregir el `eval` de Zod bloqueado por la CSP (`jitless`)
@@ -120,12 +122,41 @@ Historias de usuario del proyecto **MAU**, ordenadas por prioridad.
 - [x] Página de noticia `/noticia/:id` con botón a la fuente
 - [x] Noticias relacionadas por etiquetas, fuente y plataforma (con pruebas)
 - [x] Rediseño de header, filtros, login, perfil, curaduría y avisos
+- [x] Recomendaciones (antes planeadas para el Sprint 9): similitud por etiquetas y vista con su propia ruta
 
-### Sprint 9: Recomendaciones ✅ (se hizo en el Sprint 8)
-- [x] Algoritmo de similitud por etiquetas en común
-- [x] Vista de recomendaciones con su propia ruta
+### Sprint 9: Experiencia ✅
+- [x] Scroll infinito: fuentes en tandas (`SOURCE_PAGES`) y componente `LoadMore` con `IntersectionObserver` (HU-19)
+- [x] 4 revistas nuevas: Elle, Glamour, Esquire y Cosmopolitan (10 fuentes en total)
+- [x] Caché por tanda: al volver al tablero se muestran todas las tandas ya vistas
+- [x] Si falla una tanda posterior, el error aparece al final sin perder lo ya cargado
+- [x] Enlace compartido a una noticia de otra tanda: se siguen pidiendo tandas hasta encontrarla
+- [x] Modo oscuro con `ThemeToggle` + `useTheme`, que sigue al sistema y recuerda la elección (HU-20)
+- [x] `theme-init.js` aplica el tema antes de pintar, sin romper la CSP
+- [x] Colores del tema en variables (`--surface-*`, `--shadow-rgb`, `--backdrop`…)
+- [x] Logo con la leyenda completa y las iniciales M·A·U en plata
+- [x] Metadatos: descripción y `theme-color` para claro y oscuro
+- [x] Documentar en README, `docs/DISENO.md`, `docs/API.md` y `docs/OPTIMIZACION.md`
 
-### Sprint 10: Pulido
+### Sprint 10: Pulido con referencias de diseño ✅
 - [x] Paleta, tipografía y logo nuevos (Sprint 8)
-- [ ] Diseño responsivo afinado para celular
-- [ ] Optimización de imágenes
+- [x] Estudiar awesome-design-md (Apple, Pinterest, Wired) y awesome-liquid-glass
+- [x] `DESIGN.md` de MAU en el formato de awesome-design-md
+- [x] Tokens: escala de espaciado, tipografía (17 px de lectura, eyebrow), radios 16/24/32/píldora y área de toque de 44 px
+- [x] Vidrio en tres capas (tinte + brillo especular, desenfoque, borde de luz)
+- [x] Refracción con filtro SVG (`LiquidGlassFilter`) solo en Chromium; vidrio esmerilado en los demás
+- [x] Cápsula de navegación fija: arriba en la computadora y barra de pestañas abajo en el celular
+- [x] Diseño responsivo afinado para celular: 2 columnas, filtros deslizables, panel compacto (HU-07)
+- [x] Buscador de vidrio líquido y control segmentado de plataforma
+- [x] Tablero disperso: tarjetas apenas giradas en pantallas grandes (HU-01)
+- [x] Página de la noticia editorial (eyebrow, líneas finas, lectura a 17 px) y foto sin recortar la cara
+- [x] Optimización de imágenes: prioridad alta en las 6 primeras, fundido al cargar y respaldo si fallan
+- [x] Pie de página con las fuentes
+- [x] Accesibilidad: foco visible en modo oscuro y `prefers-reduced-transparency`
+- [x] Modo oscuro en un solo bloque de CSS (`theme-init.js` siempre pone `data-theme`)
+- [x] Corregir el logo sin estilos del Sprint 9
+- [x] Capturas en `docs/capturas/parte-9-*` y `parte-10-*`
+
+### Pendientes (requieren la cuenta del autor)
+- [ ] Crear la cuenta de Vercel, importar el repositorio y pegar la URL en el README (Sprint 7)
+- [ ] Proteger `main` para exigir la CI en verde (Sprint 7)
+- [ ] Cambiar los 2 posts de ejemplo de `news.json` por TikToks e Instagrams reales (Sprint 3)

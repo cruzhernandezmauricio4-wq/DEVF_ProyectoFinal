@@ -7,7 +7,7 @@
 }
 
 .profile__avatar {
-  border: 3px solid rgb(255 255 255 / 0.9);
+  border: 3px solid var(--highlight);
   border-radius: 50%;
   background: var(--silver-200);
 }
@@ -28,7 +28,7 @@
   padding: 1rem;
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-sm);
-  background: rgb(255 255 255 / 0.5);
+  background: var(--surface-1);
 }
 
 .profile__details dt {

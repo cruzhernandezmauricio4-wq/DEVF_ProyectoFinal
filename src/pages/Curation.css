@@ -63,7 +63,7 @@
 .curation__table th,
 .curation__table td {
   padding: 0.75rem;
-  border-bottom: 1px solid rgb(28 29 33 / 0.08);
+  border-bottom: 1px solid var(--line);
   text-align: left;
 }
 

@@ -119,7 +119,9 @@ La traducción de error a mensaje está en un solo lugar: [`getErrorMessage()`](
 | Dónde | Error | Cómo se informa |
 |---|---|---|
 | Tablero | Fallan **todas** las fuentes | Bloque "No pudimos cargar las noticias" con el motivo y botón **Reintentar** |
-| Tablero | Fallan **algunas** fuentes | Aviso con los nombres de las fuentes caídas; el resto sí se muestra |
+| Tablero | Fallan **algunas** fuentes | Aviso con los nombres de las fuentes caídas; el resto sí se muestra. Su **Reintentar** vuelve a pedir todas las tandas |
+| Tablero | Falla una tanda al hacer scroll (Sprint 9) | Las noticias ya cargadas se quedan; al final aparece "No pudimos traer más noticias" con **Reintentar** |
+| Noticia | El enlace es de una tanda posterior (Sprint 9) | Se muestra "Cargando noticia…" mientras se piden tandas hasta encontrarla; si no aparece en ninguna, el aviso "Noticia no disponible" con enlace al tablero |
 | Tablero | Una noticia viene mal formada | Se descarta sin afectar a las demás |
 | Login | Datos inválidos | Mensaje bajo cada campo |
 | Login | Credenciales incorrectas, sin internet… | Alerta roja arriba del botón |

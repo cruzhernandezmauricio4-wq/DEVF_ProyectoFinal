@@ -19,11 +19,18 @@ function formatDate(value) {
 // Página de una noticia: la noticia en grande, enlace a la fuente y noticias relacionadas.
 function NewsDetail() {
   const { id } = useParams()
-  const { news, loading, error, retry } = useNews()
+  const { news, loading, loadingMore, error, hasMore, loadMore, retry } = useNews()
 
   const item = useMemo(() => news.find((n) => n.id === id), [news, id])
   // useMemo: el cálculo de parecido recorre todas las noticias; solo se repite al cambiar de noticia.
   const related = useMemo(() => (item ? getRelatedNews(item, news, 12) : []), [item, news])
+
+  // Si la noticia es de una tanda que aún no se carga (enlace compartido), se siguen
+  // pidiendo tandas hasta encontrarla o terminar.
+  const searching = !item && hasMore && !error
+  useEffect(() => {
+    if (searching && !loadingMore) loadMore()
+  }, [searching, loadingMore, loadMore])
 
   // Al abrir otra noticia desde las relacionadas, se regresa arriba.
   // Con llaves: scrollTo puede regresar una Promise y un efecto solo debe regresar su limpieza.
@@ -31,8 +38,8 @@ function NewsDetail() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [id])
 
-  if (loading) return <StatusMessage>Cargando noticia…</StatusMessage>
-  if (error) {
+  if (loading || searching) return <StatusMessage>Cargando noticia…</StatusMessage>
+  if (error && !item) {
     return (
       <main className="page">
         <ErrorState title="No pudimos cargar la noticia" message={getErrorMessage(error)} onRetry={retry} showHomeLink />
@@ -55,17 +62,17 @@ function NewsDetail() {
 
   return (
     <main className="page news-detail">
-      <Link to="/" className="news-detail__back">
+      <Link to="/" className="news-detail__back glass glass--liquid">
         ← Volver al tablero
       </Link>
 
-      <article className="news-detail__hero glass">
+      <article className="news-detail__hero glass glass--strong">
         <div className="news-detail__media">
-          <img src={item.image} alt="" />
+          <img src={item.image} alt="" fetchPriority="high" />
         </div>
         <div className="news-detail__body">
           <div className="news-detail__meta">
-            <span className="news-detail__source">{item.source}</span>
+            <span className="news-detail__source eyebrow">{item.source}</span>
             <PlatformBadge platform={item.platform} />
             {date && <time dateTime={item.date}>{date}</time>}
           </div>

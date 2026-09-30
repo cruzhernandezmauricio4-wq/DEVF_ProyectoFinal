@@ -4,12 +4,12 @@
 
 [![CI](https://github.com/cruzhernandezmauricio4-wq/DEVF_ProyectoFinal/actions/workflows/ci.yml/badge.svg)](https://github.com/cruzhernandezmauricio4-wq/DEVF_ProyectoFinal/actions/workflows/ci.yml)
 
-🔗 **Demo:** _(pega aquí la URL de Vercel, ej. `https://mau-moda.vercel.app`)_
+🔗 **Demo:** _pendiente. El proyecto todavía no está conectado a Vercel; los pasos están en [docs/DESPLIEGUE.md](docs/DESPLIEGUE.md#3-paso-a-paso-en-vercel). Al publicarlo, pega aquí la URL (ej. `https://mau-moda.vercel.app`)._
 
 Proyecto Final del Módulo 6 (React avanzado) de **DEV.F**.
 Es la evolución de mi primer proyecto web, [Proyecto-DEFV](https://github.com/cruzhernandezmauricio4-wq/Proyecto-DEFV) ([ver sitio](https://cruzhernandezmauricio4-wq.github.io/Proyecto-DEFV/)), con un **rebranding completo**.
 
-![Vista actual de MAU](docs/capturas/parte-8-tablero-hover.png)
+![Vista actual de MAU](docs/capturas/parte-10-tablero.png)
 
 ---
 
@@ -21,7 +21,7 @@ Cada tarjeta del tablero es una noticia, que puede venir de cualquier formato:
 
 | Formato | Ejemplos |
 |---|---|
-| 📰 Revista / artículo | Vogue, Dazed, Hypebeast, Harper's Bazaar, Fashionista |
+| 📰 Revista / artículo | Vogue, Dazed, Hypebeast, Harper's Bazaar, Fashionista, Elle, Glamour, Esquire, Cosmopolitan |
 | ▶️ Video | YouTube (canal de Vogue) |
 | 🎵 Video corto | TikTok |
 | 📸 Post | Instagram |
@@ -35,7 +35,7 @@ El proyecto se basa en la opción **🛒 Catálogo Interactivo de Productos**, a
 ## ✨ Funcionalidades principales
 
 1. **Tablero tipo moodboard**
-   Las noticias se acomodan en columnas de alturas libres, como recortes pegados en una pared. La foto ocupa la tarjeta y los datos van en un panel de **vidrio líquido**.
+   Las noticias se acomodan en columnas de alturas libres, como recortes pegados en una pared, apenas giradas en pantallas grandes. La foto ocupa la tarjeta y los datos van en un panel de **vidrio líquido**. En el celular se ven en 2 columnas.
 
 2. **Efecto *pop* elástico al pasar el mouse**
    Al hacer *hover*, la tarjeta crece y se **deforma de manera elástica** (como una burbuja o gelatina) y luego vuelve a su forma original.
@@ -47,6 +47,15 @@ El proyecto se basa en la opción **🛒 Catálogo Interactivo de Productos**, a
    Lleva directo a la **URL de la fuente** (artículo, video o post) en una pestaña nueva.
 
 > ⚙️ **Nota técnica:** el doble clic también dispara el evento de clic. Para distinguirlos, la acción de un clic espera unos ~250 ms. Si en ese tiempo llega un segundo clic, se cancela y se abre la URL.
+
+5. **Scroll infinito**
+   Al abrir el tablero se cargan las 6 fuentes principales. Al acercarse al final se piden más revistas por tandas, hasta sumar 10 fuentes. Al terminar aparece *"Ya viste todas las noticias de hoy"* con un botón para volver arriba.
+
+6. **Modo claro y oscuro**
+   Sigue el tema del sistema. El botón del header permite cambiarlo y la elección se recuerda en el navegador.
+
+7. **Navegación de vidrio líquido siempre visible**
+   Una cápsula de cristal que refracta las fotos que pasan debajo: arriba a la derecha en la computadora y como barra de pestañas abajo en el celular.
 
 ---
 
@@ -101,7 +110,8 @@ El detalle, los esquemas y las 17 pruebas realizadas están en **[docs/ERRORES.m
 ## ⚡ Optimización
 
 - **Filtros del tablero:** buscador, plataforma y etiquetas, optimizados con `useMemo`, `useCallback`, `React.memo` y `useDeferredValue`.
-- **Caché de noticias:** volver al tablero no repite las peticiones a las APIs.
+- **Caché de noticias por tanda:** volver al tablero no repite las peticiones y muestra de inmediato todas las tandas que ya se habían cargado.
+- **Scroll infinito:** la primera carga pide 6 fuentes en lugar de 10; las demás solo si el usuario sigue bajando.
 - **Carga diferida:** Login, Perfil y Curaduría se descargan solo al visitarlos (`React.lazy`).
 
 | Escenario (CPU 4× más lenta) | Antes | Después |
@@ -116,14 +126,26 @@ El análisis completo y cómo se midió están en **[docs/OPTIMIZACION.md](docs/
 
 ## 🪩 Diseño
 
-Identidad **plata cromada + vidrio líquido**: fondo plateado con reflejos perlados, tarjetas y paneles de vidrio translúcido, logo cromado y tipografía editorial. Detalle del pop elástico, la página de la noticia y el algoritmo de relacionadas en **[docs/DISENO.md](docs/DISENO.md)**.
+Identidad **plata cromada + vidrio líquido**: fondo plateado con reflejos perlados, tarjetas y paneles de vidrio translúcido, logo cromado y tipografía editorial, con **modo oscuro** en grafito y vidrio ahumado.
+
+En el Sprint 10 se pulió con dos repositorios de referencia, sin cambiar la identidad:
+
+- **[awesome-design-md](https://github.com/voltagent/awesome-design-md):** de **Apple**, la navegación de vidrio, los toques de 44 px y la lectura a 17 px; de **Pinterest**, el tablero por columnas (2 en el celular) y los filtros deslizables; de **Wired**, la página de la noticia con voz de revista.
+- **[awesome-liquid-glass](https://github.com/carolhsiaoo/awesome-liquid-glass):** vidrio en tres capas (tinte, brillo especular y borde de luz) y **refracción real** con un filtro SVG (`feTurbulence` + `feDisplacementMap`).
+
+| Celular | Vidrio líquido |
+|---|---|
+| ![MAU en el celular](docs/capturas/parte-10-celular-oscuro.png) | ![Cápsula de vidrio líquido](docs/capturas/parte-10-vidrio-liquido.png) |
+
+- **[DESIGN.md](DESIGN.md):** el sistema de diseño de MAU en el formato de awesome-design-md (colores, tipografía, componentes, qué hacer y qué no).
+- **[docs/DISENO.md](docs/DISENO.md):** el pop elástico, la página de la noticia, las relacionadas, el modo oscuro, el scroll infinito y el detalle del Sprint 10.
 
 ---
 
 ## 🚀 Despliegue y CI/CD
 
 - **CD con Vercel:** cada push a una rama crea una vista previa; cada fusión a `main` se publica en producción.
-- **CI con GitHub Actions:** en cada Pull Request se corren el linter, **37 pruebas automáticas** (Vitest) y el build. Si algo falla, el PR queda en ❌.
+- **CI con GitHub Actions:** en cada Pull Request se corren el linter, **41 pruebas automáticas** (Vitest) y el build. Si algo falla, el PR queda en ❌.
 - **`vercel.json`:** rutas de React, caché de un año para los archivos con hash y encabezados de seguridad (CSP, anti-iframe, etc.).
 
 Paso a paso para desplegar, cómo proteger `main` y solución de problemas: **[docs/DESPLIEGUE.md](docs/DESPLIEGUE.md)**.
@@ -147,7 +169,9 @@ DEVF_ProyectoFinal/
 │   ├── GIT.md                # Guía del flujo de Git del proyecto
 │   ├── OPTIMIZACION.md       # Análisis y mediciones de rendimiento
 │   └── RUTAS.md              # Rutas protegidas y seguridad
-├── public/                   # Archivos estáticos (favicon, etc.)
+├── public/
+│   ├── favicon.svg           # Ícono de la pestaña
+│   └── theme-init.js         # Aplica el tema y activa la refracción antes de pintar
 ├── scripts/
 │   └── check-api.js          # Solicitud de muestra para probar las fuentes
 ├── src/
@@ -158,17 +182,21 @@ DEVF_ProyectoFinal/
 │   │   ├── ErrorBoundary.jsx # Atrapa errores inesperados al renderizar
 │   │   ├── ErrorState.jsx    # Bloque de error con botón Reintentar
 │   │   ├── FormField.jsx     # Campo de formulario con mensaje de error
-│   │   ├── Header.jsx        # Logo, navegación y usuario conectado
+│   │   ├── Footer.jsx        # Pie con la marca y las fuentes
+│   │   ├── Header.jsx        # Logo y cápsula de navegación (arriba o abajo)
 │   │   ├── Layout.jsx        # Estructura común de todas las páginas
+│   │   ├── LiquidGlassFilter.jsx # Filtro SVG de la refracción del vidrio
+│   │   ├── LoadMore.jsx      # Final del tablero: pide más noticias (scroll infinito)
 │   │   ├── NewsCard.jsx      # Tarjeta con pop elástico; clic y doble clic (memo)
 │   │   ├── NewsFilters.jsx   # Buscador y filtros del tablero (memo)
 │   │   ├── PlatformBadge.jsx # Etiqueta de la plataforma (YouTube, TikTok…)
 │   │   ├── StatusMessage.jsx # Mensajes de carga
+│   │   ├── ThemeToggle.jsx   # Botón de modo claro / oscuro
 │   │   └── Toaster.jsx       # Avisos emergentes
 │   ├── config/
 │   │   ├── auth.js           # Backend de autenticación, roles y cuentas de prueba
 │   │   ├── platforms.js      # Nombre e ícono de cada plataforma
-│   │   ├── sources.js        # Lista de fuentes RSS y configuración de la API
+│   │   ├── sources.js        # Fuentes RSS agrupadas en tandas y configuración de la API
 │   │   └── zod.js            # Desactiva el eval de Zod (compatible con la CSP)
 │   ├── context/
 │   │   ├── authContext.js    # Contexto de la sesión
@@ -180,9 +208,10 @@ DEVF_ProyectoFinal/
 │   ├── hooks/
 │   │   ├── useAuth.js        # Acceso a la sesión desde cualquier componente
 │   │   ├── useClickOrDoubleClick.js # Distingue clic de doble clic
-│   │   ├── useNews.js        # Carga las noticias con estados de carga, error y reintento
+│   │   ├── useNews.js        # Carga las noticias por tandas, con carga, error y reintento
 │   │   ├── useNewsFilters.js # Filtros con useMemo, useCallback y useDeferredValue
 │   │   ├── useNotify.js      # Muestra un aviso emergente
+│   │   ├── useTheme.js       # Tema actual y cambio entre claro y oscuro
 │   │   └── useZodForm.js     # Formularios validados con un esquema de Zod
 │   ├── pages/
 │   │   ├── Curation.jsx      # 🛡️ Panel de curaduría (admin y moderator)
@@ -203,9 +232,9 @@ DEVF_ProyectoFinal/
 │   │   ├── curatedService.js # Lee y guarda los posts curados
 │   │   ├── httpClient.js     # Cliente HTTP: tiempo límite, errores y validación
 │   │   ├── rssClient.js      # Petición HTTP a rss2json
-│   │   └── newsService.js    # Une, normaliza y guarda en caché las noticias
+│   │   └── newsService.js    # Une, normaliza y guarda en caché cada tanda de noticias
 │   ├── styles/
-│   │   └── variables.css     # Colores, tipografías y medidas de la marca
+│   │   └── variables.css     # Colores (claro y oscuro), tipografías y medidas
 │   ├── utils/
 │   │   ├── errors.js         # AppError y mensajes de error para el usuario
 │   │   ├── html.js           # Limpia texto con HTML
@@ -215,9 +244,10 @@ DEVF_ProyectoFinal/
 │   │   ├── session.js        # Guarda los tokens y lee su expiración
 │   │   └── tags.js           # Genera etiquetas a partir del texto
 │   ├── App.jsx               # Componente raíz y definición de rutas
-│   ├── index.css             # Estilos globales
+│   ├── index.css             # Estilos globales y el sistema de vidrio (.glass)
 │   └── main.jsx              # Punto de entrada de React
 ├── .env.example              # Variables de entorno de ejemplo
+├── DESIGN.md                 # Sistema de diseño (formato awesome-design-md)
 ├── .gitignore                # Archivos que Git no debe subir
 ├── index.html
 ├── package.json
@@ -251,14 +281,16 @@ App
     └── NotificationProvider   (+ Toaster)
         └── AuthProvider
             └── Layout
-                ├── Header
-                └── ErrorBoundary
+                ├── LiquidGlassFilter
+                ├── Header  →  ThemeToggle
+                ├── ErrorBoundary
                     └── (página según la ruta)
-                        ├── Home  →  NewsFilters + Board  →  NewsCard  →  PlatformBadge
+                        ├── Home  →  NewsFilters + Board (→ NewsCard → PlatformBadge) + LoadMore
                         ├── Login  →  FormField
                         ├── ProtectedRoute  →  Profile
                         ├── ProtectedRoute (roles)  →  Curation  →  CuratedPostForm  |  Forbidden
                         └── NotFound
+                └── Footer
 ```
 
 ### Modelo de una noticia
@@ -326,9 +358,10 @@ El flujo de Git (ramas, commits y cómo actualizar el repositorio remoto) está 
 - [x] **Parte 5:** validaciones con Zod y manejo de errores de formularios y peticiones al backend
 - [x] **Parte 6:** optimización con `useMemo`, `useCallback`, `memo`, `useDeferredValue`, `lazy` y caché, más filtros del tablero
 - [x] **Parte 7:** despliegue en Vercel, CI con GitHub Actions, pruebas con Vitest y encabezados de seguridad
-- [ ] Tablero disperso
 - [x] **Parte 8:** rediseño plata + vidrio líquido, pop elástico, clic/doble clic y página de noticia con relacionadas
-- [ ] Diseño responsivo afinado para celular
+- [x] **Parte 9:** modo oscuro, scroll infinito con 10 fuentes, logo con la leyenda completa y metadatos para compartir
+- [x] **Parte 10:** diseño con referencias (Apple, Pinterest, Wired), vidrio líquido con refracción, navegación flotante, diseño para celular, tablero disperso e imágenes optimizadas
+- [ ] Conectar Vercel y publicar la URL de producción
 
 ---
 

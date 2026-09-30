@@ -1,78 +1,182 @@
 .header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 1rem;
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 2rem 1rem 1.25rem;
+  padding: var(--space-6) var(--gutter) var(--space-5);
 }
 
-/* Logo en letras de plata cromada */
+/* Logo: la leyenda completa en plata cromada. Los conectores "for" y "and" van en
+   cursiva, más pequeños y en gris, para que resalten las iniciales M·A·U. */
 .header__logo {
   display: inline-block;
   font-family: var(--font-display);
-  font-size: clamp(3.5rem, 11vw, 8rem);
+  font-size: clamp(2.75rem, 7.5vw, 7rem);
   font-weight: 400;
-  line-height: 0.85;
-  letter-spacing: -0.02em;
+  line-height: 0.9;
+  letter-spacing: var(--tracking-display);
   text-decoration: none;
   background: var(--chrome);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(0 1px 0 rgb(255 255 255 / 0.9)) drop-shadow(0 6px 10px rgb(28 29 33 / 0.15));
+  filter: drop-shadow(0 1px 0 var(--highlight)) drop-shadow(0 6px 10px rgb(var(--shadow-rgb) / 0.15));
 }
 
-.header__tagline {
-  margin: 0.5rem 0 0;
+.logo__joiner {
   color: var(--color-muted);
-  font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-size: 0.55em;
   font-style: italic;
+  letter-spacing: 0;
 }
 
-/* Barra de navegación de vidrio */
+/* ─── Navegación: cápsula de vidrio líquido que flota siempre visible ─── */
 .header__nav {
+  position: fixed;
+  z-index: 50;
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0.35rem;
-  border-radius: 999px;
-  font-size: 0.85rem;
+  gap: var(--space-1);
+  padding: 0.3rem;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-small);
+  transition: transform 0.45s var(--ease-liquid);
 }
 
-.header__nav > a:not(.button) {
-  padding: 0.55rem 1rem;
-  border-radius: 999px;
+.nav-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 2.5rem;
+  padding: 0.5rem 1rem;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: none;
   color: var(--color-muted);
+  font: inherit;
   font-weight: 500;
   text-decoration: none;
-  transition: background 0.2s, color 0.2s;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    transform 0.35s var(--ease-liquid);
 }
 
-.header__nav > a:not(.button):hover {
+.nav-item:hover {
   color: var(--color-text);
 }
 
-.header__nav > a.active:not(.button) {
-  background: rgb(255 255 255 / 0.8);
+.nav-item:active {
+  transform: scale(0.95);
+}
+
+/* Pestaña activa: una gota de vidrio más clara dentro de la cápsula */
+.nav-item.active:not(.nav-item--primary) {
+  background: var(--surface-2);
   color: var(--color-text);
-  box-shadow: 0 1px 4px rgb(28 29 33 / 0.1);
+  box-shadow: var(--glass-specular), 0 1px 4px rgb(var(--shadow-rgb) / 0.12);
+}
+
+.nav-item--primary {
+  background: var(--button-metal);
+  color: var(--color-on-accent);
+  font-weight: 600;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25), 0 4px 12px rgb(var(--shadow-rgb) / 0.2);
+}
+
+.nav-item--primary:hover {
+  color: var(--color-on-accent);
+}
+
+.nav-icon {
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .header__user {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding-left: 0.5rem;
+  gap: var(--space-2);
+  padding-left: var(--space-2);
   font-weight: 500;
 }
 
 .header__user img {
-  border: 2px solid rgb(255 255 255 / 0.9);
+  border: 2px solid var(--highlight);
   border-radius: 50%;
   background: var(--silver-200);
+}
+
+/* Computadora: arriba a la derecha, alineada con el contenido. En pantallas medianas
+   el logo baja un renglón para que la cápsula no lo tape. */
+@media (min-width: 720px) {
+  .header__nav {
+    top: var(--space-4);
+    right: max(var(--gutter), calc((100vw - var(--max-width)) / 2 + var(--gutter)));
+  }
+
+  .header__nav .nav-icon {
+    display: none;
+  }
+
+  .header__nav .theme-toggle .nav-icon,
+  .header__nav .nav-item--button .nav-icon {
+    display: block;
+  }
+
+  .header__nav .nav-item--button span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .header__nav .nav-item--button {
+    padding-inline: 0.65rem;
+  }
+}
+
+@media (min-width: 720px) and (max-width: 1279px) {
+  .header {
+    padding-top: calc(var(--space-4) + var(--nav-height) + var(--space-4));
+  }
+}
+
+/* Celular: barra de pestañas flotante abajo, como en iOS */
+@media (max-width: 719px) {
+  .header {
+    padding-top: var(--space-5);
+  }
+
+  .header__nav {
+    bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
+    left: 50%;
+    max-width: calc(100vw - 2 * var(--gutter));
+    translate: -50% 0;
+    padding: 0.35rem;
+  }
+
+  .nav-item {
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 3.6rem;
+    min-height: var(--tap);
+    padding: 0.4rem 0.6rem;
+    font-size: 0.6875rem;
+  }
+
+  .header__user {
+    padding-left: 0;
+  }
+
+  .header__user img,
+  .header__user-name {
+    display: none;
+  }
 }
