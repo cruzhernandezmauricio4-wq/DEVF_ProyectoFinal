@@ -1,4 +1,4 @@
-import { RSS_SOURCES } from '../config/sources'
+import { SOURCE_PAGES } from '../config/sources'
 import { NewsSchema } from '../schemas/news'
 import { RssItemSchema } from '../schemas/rss'
 import { AppError } from '../utils/errors'
@@ -47,17 +47,17 @@ function interleave(groups) {
   return result
 }
 
-// Reúne las noticias de todas las fuentes. Si alguna falla, se muestran las demás
+// Reúne las noticias de una tanda de fuentes. Si alguna falla, se muestran las demás
 // y se informa cuáles no respondieron.
-async function loadFeeds() {
+async function loadFeeds(sources) {
   const results = await Promise.allSettled(
-    RSS_SOURCES.map((source) => fetchFeed(source.url).then((items) => parseItems(items, source))),
+    sources.map((source) => fetchFeed(source.url).then((items) => parseItems(items, source))),
   )
 
   const groups = []
   const failedSources = []
   results.forEach((result, i) => {
-    const source = RSS_SOURCES[i]
+    const source = sources[i]
     if (result.status === 'fulfilled') return groups.push(result.value)
     failedSources.push(`${source.name} (${source.platform})`)
     console.warn(`[MAU] ${source.name} no disponible:`, result.reason)
@@ -74,10 +74,28 @@ async function loadFeeds() {
   return { groups, failedSources }
 }
 
-// Caché en memoria: las noticias se piden una vez y se reutilizan durante 5 minutos.
+// Número de tandas de fuentes (páginas del scroll infinito).
+export const TOTAL_PAGES = SOURCE_PAGES.length
+
+// Caché en memoria por tanda: cada una se pide una vez y se reutiliza 5 minutos.
 // También comparte la petición en curso si dos componentes la piden a la vez.
 const CACHE_MS = 5 * 60 * 1000
-let cache = null // { at, promise }
+const cache = new Map() // índice de tanda → { at, promise }
+
+const isFresh = (entry) => entry && Date.now() - entry.at <= CACHE_MS
+
+// Cuántas tandas seguidas, desde la primera, siguen en caché. Sirve para que al volver
+// al tablero se muestren de inmediato todas las noticias que ya se habían cargado.
+export function getCachedPageCount() {
+  let count = 0
+  while (count < TOTAL_PAGES && isFresh(cache.get(count))) count++
+  return count
+}
+
+// Olvida la caché para volver a pedir todo (aviso de fuentes caídas → Reintentar).
+export function clearNewsCache() {
+  cache.clear()
+}
 
 // Deja de esperar si el componente se desmonta, sin cancelar la carga compartida.
 function withSignal(promise, signal) {
@@ -89,18 +107,20 @@ function withSignal(promise, signal) {
   })
 }
 
-// `force` ignora la caché (botón Reintentar).
-export async function getNews({ signal, force = false } = {}) {
-  if (force || !cache || Date.now() - cache.at > CACHE_MS) {
-    const promise = loadFeeds()
-    cache = { at: Date.now(), promise }
+// Noticias de la tanda `index`. `force` ignora la caché (botón Reintentar).
+export async function getNewsPage(index, { signal, force = false } = {}) {
+  if (force || !isFresh(cache.get(index))) {
+    const promise = loadFeeds(SOURCE_PAGES[index])
+    cache.set(index, { at: Date.now(), promise })
     // Un error no se guarda en caché: el siguiente intento vuelve a pedir.
     promise.catch(() => {
-      if (cache?.promise === promise) cache = null
+      if (cache.get(index)?.promise === promise) cache.delete(index)
     })
   }
 
-  const { groups, failedSources } = await withSignal(cache.promise, signal)
-  // Los posts curados se leen siempre frescos, para que aparezcan los recién agregados.
-  return { news: interleave([...groups, getCuratedPosts()]), failedSources }
+  const { groups, failedSources } = await withSignal(cache.get(index).promise, signal)
+  // Los posts curados van en la primera tanda y se leen siempre frescos,
+  // para que aparezcan los recién agregados.
+  const extra = index === 0 ? [getCuratedPosts()] : []
+  return { news: interleave([...groups, ...extra]), failedSources }
 }
