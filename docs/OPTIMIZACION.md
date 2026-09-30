@@ -101,6 +101,36 @@ En [`newsService.js`](../src/services/newsService.js):
 - El botón **Reintentar** fuerza una carga nueva (`force: true`).
 - Los posts curados se leen siempre frescos, para que un post recién agregado aparezca de inmediato.
 
+**Desde el Sprint 9 la caché es por tanda** (un `Map` de índice de tanda → petición). `getCachedPageCount()` dice cuántas tandas seguidas siguen frescas, y `useNews` las vuelve a mostrar todas al regresar al tablero, así no se pierde lo que el usuario ya había visto. El aviso de fuentes caídas usa `clearNewsCache()` para pedir todo de nuevo.
+
+### Scroll infinito: pedir menos al inicio (Sprint 9)
+
+Con 10 fuentes, pedirlas todas al abrir haría la primera carga más lenta y gastaría peticiones de rss2json que quizá nadie ve. Por eso se agrupan en tandas:
+
+| | Al abrir el tablero | Al bajar |
+|---|---|---|
+| Peticiones | **6** (tanda 1) | 2 por cada tanda nueva |
+| Noticias | ~60 | ~20 más por tanda |
+
+[`LoadMore`](../src/components/LoadMore.jsx) usa un `IntersectionObserver` con `rootMargin` de **1,200 px**: empieza a pedir la siguiente tanda antes de llegar al final, para que no se note la espera. No escucha el evento `scroll`, así que no ejecuta código en cada movimiento. La lista completa se arma con `useMemo` solo cuando llega una tanda nueva.
+
+### Imágenes (Sprint 10)
+
+Las fotos vienen de cada revista, así que no se pueden recomprimir sin un servidor propio. Lo que sí se optimizó:
+
+| Técnica | Dónde | Efecto |
+|---|---|---|
+| `loading="eager"` + `fetchPriority="high"` | Las 6 primeras tarjetas y la foto de la noticia | Lo que se ve sin hacer scroll se pide primero |
+| `loading="lazy"` + `decoding="async"` | El resto de las tarjetas | Solo se descargan al acercarse; decodificar no bloquea la página |
+| Fundido al cargar | Todas las tarjetas | La foto aparece suave sobre el marco plateado en lugar de "saltar" |
+| Respaldo si la imagen falla | Todas las tarjetas | Se muestra el nombre de la fuente en plata, no un hueco |
+
+El estado de cada imagen (`data-state="loaded"` o `"error"`) se escribe directo en el elemento, **sin `useState`**, para que cargar 90 imágenes no provoque 90 renders. Si la imagen ya estaba en la caché del navegador, un `ref` lo detecta al montar.
+
+### Costo del vidrio líquido (Sprint 10)
+
+El filtro SVG de refracción es caro, así que solo se aplica a elementos pequeños y únicos: la cápsula de navegación, el buscador, "Volver al tablero" y **una** tarjeta a la vez (la que hace el pop). Medido en Chrome sin GPU (modo *headless*, 1,440 × 900) haciendo scroll 2 s sobre el tablero: 22 cuadros por segundo con refracción y 18 sin ella. Es una diferencia dentro del ruido de la medición: la refracción no hace más lento el scroll. En un navegador normal, con GPU, las dos cifras son más altas.
+
 ---
 
 ## 4. Resultados medidos

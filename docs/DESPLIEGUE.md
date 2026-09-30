@@ -22,11 +22,14 @@ Cómo MAU pasa de un commit a estar publicado en internet, y qué se revisa auto
 
 ## 2. Antes de desplegar: tener todo en `main`
 
-Vercel publica en producción lo que hay en `main`. Fusiona los Pull Requests **en orden**:
+Vercel publica en producción lo que hay en `main`.
 
-1. `sprint-5-validaciones → main`
-2. `sprint-6-optimizacion → main`
-3. `sprint-7-despliegue → main`
+| Rama | Estado |
+|---|---|
+| `sprint-1-definicion` … `sprint-8-diseno` | ✅ Fusionadas en `main` (último: PR #6) |
+| `sprint-9-experiencia` | ⏳ Pendiente: modo oscuro, scroll infinito y el pulido de diseño del Sprint 10. Hacer commit, push y Pull Request hacia `main` |
+
+> **Estado de Vercel:** el repositorio **todavía no está conectado**. Mientras no se haga el paso 3, no existe URL pública ni vistas previas.
 
 ---
 
@@ -98,7 +101,7 @@ El workflow [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) corre en u
 |---|---|---|
 | Instalar dependencias | `npm ci` | `package-lock.json` no coincide con `package.json` |
 | Linter | `npm run lint:ci` | Hay **cualquier** aviso u error de oxlint |
-| Pruebas | `npm test` | Falla alguna de las 37 pruebas de Vitest |
+| Pruebas | `npm test` | Falla alguna de las 41 pruebas de Vitest |
 | Build | `npm run build` | Vite no puede compilar la app |
 
 Se ve en la pestaña **Actions** del repositorio y como ✅/❌ en cada Pull Request. El badge del README muestra el estado de `main`.
@@ -124,6 +127,8 @@ Se agregaron con [Vitest](https://vitest.dev) para que la CI revise algo real:
 | [`utils/errors.test.js`](../src/utils/errors.test.js) | Mensajes para el usuario según el tipo de error | 8 |
 | [`utils/tags.test.js`](../src/utils/tags.test.js) | Etiquetas automáticas de las noticias | 3 |
 | [`utils/html.test.js`](../src/utils/html.test.js) | Limpieza de HTML (y que no ejecute scripts incrustados) | 3 |
+| [`utils/related.test.js`](../src/utils/related.test.js) | Puntaje y orden de las noticias relacionadas (Sprint 8) | 4 |
+| **Total** | | **41** |
 
 ```bash
 npm test            # corre todas una vez
@@ -158,12 +163,12 @@ La política de seguridad (CSP) permite:
 
 | Directiva | Permite | Por qué |
 |---|---|---|
-| `script-src 'self'` | Solo scripts de MAU | Nada inyectado ni `eval` |
+| `script-src 'self'` | Solo scripts de MAU | Nada inyectado ni `eval`. Por eso el tema se aplica desde el archivo [`public/theme-init.js`](../public/theme-init.js) y no con un `<script>` en línea. El filtro SVG del vidrio líquido es un `<svg>` que dibuja React, no un script, así que tampoco necesita cambios |
 | `connect-src` | `'self'`, `api.rss2json.com`, `dummyjson.com` | Las únicas APIs que usa la app |
 | `img-src 'self' https: data:` | Imágenes de cualquier sitio https | Las portadas vienen de muchas revistas |
 | `frame-ancestors 'none'` | Nadie | Igual que `X-Frame-Options` |
 
-> ⚠️ Si en el futuro se agrega otra API, hay que sumarla a `connect-src`, o el navegador bloqueará las peticiones.
+> ⚠️ Si en el futuro se agrega otra API, hay que sumarla a `connect-src`, o el navegador bloqueará las peticiones. Las revistas nuevas del Sprint 9 (Elle, Glamour, Esquire, Cosmopolitan) **no** requieren cambios, porque se leen a través de rss2json.
 
 ---
 
@@ -184,6 +189,7 @@ Como el despliegue requiere tu cuenta de Vercel, se verificó en local todo lo q
 | · Las páginas diferidas cargan su CSS | ✅ |
 | · Recargar `/perfil` conserva la sesión | ✅ |
 | · Sin violaciones de la política de seguridad ni errores en consola | ✅ |
+| · **Sprint 10:** el filtro `#mau-liquid` existe, la cápsula lo usa y la CSP no marca nada | ✅ |
 
 ### Problema encontrado y corregido
 
@@ -197,6 +203,7 @@ Con la CSP activa, el navegador reportó 3 bloqueos `script-src eval`. **Zod 4**
 |---|---|---|
 | 404 al recargar `/perfil` en Vercel | Falta la regla `rewrites` | Ya está en `vercel.json`; revisa que el archivo esté en la raíz |
 | El build falla en Vercel por la versión de Node | Vite 8 pide Node 22.12 o mayor | `package.json` ya lo declara en `engines`. En Vercel: **Settings → Build and Deployment → Node.js Version → 22.x** |
+| La CI falla en el linter por `public/theme-init.js` | oxlint también revisa `public/` | Ya corregido en el Sprint 9 (`catch` sin variable). Corre `npm run lint:ci` antes de subir |
 | La variable `VITE_RSS2JSON_API_KEY` no se aplica | Las variables se leen **al compilar** | Guárdala en **Settings → Environment Variables** y vuelve a desplegar (**Redeploy**) |
 | `npm ci` falla en la CI | `package-lock.json` desactualizado | Corre `npm install` y sube el `package-lock.json` |
 | Una API nueva no responde en producción, pero sí en local | La CSP la bloquea | Agrega su dominio a `connect-src` en `vercel.json` |
