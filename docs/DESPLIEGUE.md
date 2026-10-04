@@ -27,9 +27,9 @@ Vercel publica en producción lo que hay en `main`.
 | Rama | Estado |
 |---|---|
 | `sprint-1-definicion` … `sprint-8-diseno` | ✅ Fusionadas en `main` (último: PR #6) |
-| `sprint-9-experiencia` | ⏳ Pendiente: modo oscuro, scroll infinito y el pulido de diseño del Sprint 10. Hacer commit, push y Pull Request hacia `main` |
+| `sprint-9-experiencia` | ✅ Fusionada en `main`: modo oscuro, scroll infinito y el pulido de diseño del Sprint 10 |
 
-> **Estado de Vercel:** el repositorio **todavía no está conectado**. Mientras no se haga el paso 3, no existe URL pública ni vistas previas.
+> **Estado de Vercel:** conectado. Producción: **[devf-proyecto-final.vercel.app](https://devf-proyecto-final.vercel.app)**. Cada rama `sprint-*` obtiene su vista previa (protegida: se ve con la sesión de Vercel iniciada).
 
 ---
 

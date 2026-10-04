@@ -108,8 +108,8 @@ Historias de usuario del proyecto **MAU**, ordenadas por prioridad.
 - [x] Verificar el build de producción con las reglas de Vercel en local
 - [x] Corregir el `eval` de Zod bloqueado por la CSP (`jitless`)
 - [x] Guía paso a paso en `docs/DESPLIEGUE.md`
-- [ ] Crear la cuenta de Vercel e importar el repositorio
-- [ ] Pegar la URL de producción en el README y en GitHub
+- [x] Crear la cuenta de Vercel e importar el repositorio
+- [x] Pegar la URL de producción en el README
 - [ ] Proteger `main` para exigir la CI en verde
 
 ### Sprint 8: Diseño e interacciones ✅
@@ -157,6 +157,6 @@ Historias de usuario del proyecto **MAU**, ordenadas por prioridad.
 - [x] Capturas en `docs/capturas/parte-9-*` y `parte-10-*`
 
 ### Pendientes (requieren la cuenta del autor)
-- [ ] Crear la cuenta de Vercel, importar el repositorio y pegar la URL en el README (Sprint 7)
+- [x] Crear la cuenta de Vercel, importar el repositorio y pegar la URL en el README (Sprint 7)
 - [ ] Proteger `main` para exigir la CI en verde (Sprint 7)
 - [ ] Cambiar los 2 posts de ejemplo de `news.json` por TikToks e Instagrams reales (Sprint 3)
