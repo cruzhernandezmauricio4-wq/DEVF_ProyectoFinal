@@ -4,7 +4,7 @@
 
 [![CI](https://github.com/cruzhernandezmauricio4-wq/DEVF_ProyectoFinal/actions/workflows/ci.yml/badge.svg)](https://github.com/cruzhernandezmauricio4-wq/DEVF_ProyectoFinal/actions/workflows/ci.yml)
 
-🔗 **Demo:** _pendiente. El proyecto todavía no está conectado a Vercel; los pasos están en [docs/DESPLIEGUE.md](docs/DESPLIEGUE.md#3-paso-a-paso-en-vercel). Al publicarlo, pega aquí la URL (ej. `https://mau-moda.vercel.app`)._
+🔗 **Demo:** **[devf-proyecto-final.vercel.app](https://devf-proyecto-final.vercel.app)**
 
 Proyecto Final del Módulo 6 (React avanzado) de **DEV.F**.
 Es la evolución de mi primer proyecto web, [Proyecto-DEFV](https://github.com/cruzhernandezmauricio4-wq/Proyecto-DEFV) ([ver sitio](https://cruzhernandezmauricio4-wq.github.io/Proyecto-DEFV/)), con un **rebranding completo**.
@@ -361,7 +361,7 @@ El flujo de Git (ramas, commits y cómo actualizar el repositorio remoto) está 
 - [x] **Parte 8:** rediseño plata + vidrio líquido, pop elástico, clic/doble clic y página de noticia con relacionadas
 - [x] **Parte 9:** modo oscuro, scroll infinito con 10 fuentes, logo con la leyenda completa y metadatos para compartir
 - [x] **Parte 10:** diseño con referencias (Apple, Pinterest, Wired), vidrio líquido con refracción, navegación flotante, diseño para celular, tablero disperso e imágenes optimizadas
-- [ ] Conectar Vercel y publicar la URL de producción
+- [x] Proyecto publicado en Vercel: [devf-proyecto-final.vercel.app](https://devf-proyecto-final.vercel.app)
 
 ---
 
